@@ -1,0 +1,1040 @@
+{
+  "questions": [
+    {
+      "number": 1,
+      "question": "下列何者不是企業正式財務報表？",
+      "options": [
+        {"label": "A", "content": "資產負債表"},
+        {"label": "B", "content": "綜合損益表"},
+        {"label": "C", "content": "現金流量表"},
+        {"label": "D", "content": "銀行往來調節表"}
+      ],
+      "answer": "D",
+      "topic": "財務報表類型",
+      "subtopic": "正式財務報表",
+      "concept": "財務報表基礎"
+    },
+    {
+      "number": 2,
+      "question": "下列對「帳戶式」資產負債表的敘述，何者正確？",
+      "options": [
+        {"label": "A", "content": "資產列在左邊，負債及股東權益在右邊"},
+        {"label": "B", "content": "資產列在上方，而後依序為負債及股東權益"},
+        {"label": "C", "content": "資產總額不一定等於負債和權益的總額"},
+        {"label": "D", "content": "權益總額等於資產和負債的總額"}
+      ],
+      "answer": "A",
+      "topic": "財務報表類型",
+      "subtopic": "資產負債表",
+      "concept": "帳戶式資產負債表"
+    },
+    {
+      "number": 3,
+      "question": "以下對「會計恆等式」的敘述，何者正確？",
+      "options": [
+        {"label": "A", "content": "企業的資產只有來自於業主的貢獻"},
+        {"label": "B", "content": "權益總額等於資產總額加除負債總額"},
+        {"label": "C", "content": "企業的資產只有來自於債權人的資金融通"},
+        {"label": "D", "content": "權益總額恆等於資產總額"}
+      ],
+      "answer": "B",
+      "topic": "會計原則",
+      "subtopic": "會計恆等式",
+      "concept": "會計基礎知識"
+    },
+    {
+      "number": 4,
+      "question": "下列何者不屬於企業的資產？",
+      "options": [
+        {"label": "A", "content": "應付票據"},
+        {"label": "B", "content": "現金"},
+        {"label": "C", "content": "機器設備"},
+        {"label": "D", "content": "存出保證金"}
+      ],
+      "answer": "A",
+      "topic": "財務報表項目",
+      "subtopic": "資產項目",
+      "concept": "資產定義"
+    },
+    {
+      "number": 5,
+      "question": "下列對「負債」的敘述，何者正確？",
+      "options": [
+        {"label": "A", "content": "未來會為企業帶來經濟資源"},
+        {"label": "B", "content": "應付薪資應列在負債"},
+        {"label": "C", "content": "業主往來會增加負債"},
+        {"label": "D", "content": "業主投入會減少負債"}
+      ],
+      "answer": "B",
+      "topic": "財務報表項目",
+      "subtopic": "負債項目",
+      "concept": "負債定義"
+    },
+    {
+      "number": 6,
+      "question": "下列何者不屬於企業的存貨？",
+      "options": [
+        {"label": "A", "content": "企業為了在正常營業過程中銷售而存放在倉庫的商品"},
+        {"label": "B", "content": "屬營建產業的企業，自建房屋供將來出售之用"},
+        {"label": "C", "content": "企業向外購入機器設備，供自行製造商品之用"},
+        {"label": "D", "content": "企業向外購入原、物料，打算生產及加工後再行出售"}
+      ],
+      "answer": "C",
+      "topic": "財務報表項目",
+      "subtopic": "資產項目",
+      "concept": "存貨定義"
+    },
+    {
+      "number": 7,
+      "question": "在資產負債表中，「庫藏股票」應如何列示？",
+      "options": [
+        {"label": "A", "content": "資產加項"},
+        {"label": "B", "content": "負債減項"},
+        {"label": "C", "content": "費用加項"},
+        {"label": "D", "content": "權益減項"}
+      ],
+      "answer": "D",
+      "topic": "財務報表項目",
+      "subtopic": "權益項目",
+      "concept": "庫藏股票"
+    },
+    {
+      "number": 8,
+      "question": "下列何項資訊無法自「綜合損益表」中得知？",
+      "options": [
+        {"label": "A", "content": "企業本期的獲利金額"},
+        {"label": "B", "content": "各項收入及各項費用的金額"},
+        {"label": "C", "content": "本分配盈餘的金額"},
+        {"label": "D", "content": "本期結算毛利"}
+      ],
+      "answer": "C",
+      "topic": "財務報表類型",
+      "subtopic": "綜合損益表",
+      "concept": "損益表資訊"
+    },
+    {
+      "number": 9,
+      "question": "營業毛利應該如何計算出來？",
+      "options": [
+        {"label": "A", "content": "營業收入減去營業成本"},
+        {"label": "B", "content": "營業收入減去營業成本後，再加除營業費用"},
+        {"label": "C", "content": "營業收入減去營業成本、營業費用後，再加除營業外費損"},
+        {"label": "D", "content": "營業收入減去營業成本後，再加上營業外收益"}
+      ],
+      "answer": "A",
+      "topic": "財務分析",
+      "subtopic": "獲利能力指標",
+      "concept": "營業毛利計算"
+    },
+    {
+      "number": 10,
+      "question": "下列何者不屬於「現金流量表」所包括的項目？",
+      "options": [
+        {"label": "A", "content": "營業活動現金流量"},
+        {"label": "B", "content": "投資活動現金流量"},
+        {"label": "C", "content": "籌資活動現金流量"},
+        {"label": "D", "content": "同店五年期業績調入存貨"}
+      ],
+      "answer": "D",
+      "topic": "財務報表類型",
+      "subtopic": "現金流量表",
+      "concept": "現金流量表分類"
+    },
+    {
+      "number": 11,
+      "question": "下列何者不屬於財務報表分析的技術？",
+      "options": [
+        {"label": "A", "content": "水平分析"},
+        {"label": "B", "content": "垂直分析"},
+        {"label": "C", "content": "技術分析"},
+        {"label": "D", "content": "比率分析"}
+      ],
+      "answer": "C",
+      "topic": "財務分析",
+      "subtopic": "分析技術",
+      "concept": "財務報表分析方法"
+    },
+    {
+      "number": 12,
+      "question": "比較分析又可稱為：",
+      "options": [
+        {"label": "A", "content": "水平分析"},
+        {"label": "B", "content": "垂直分析"},
+        {"label": "C", "content": "技術分析"},
+        {"label": "D", "content": "比率分析"}
+      ],
+      "answer": "A",
+      "topic": "財務分析",
+      "subtopic": "分析技術",
+      "concept": "水平分析"
+    },
+    {
+      "number": 13,
+      "question": "要觀察一家公司特定的財務比率變化趨勢，需要一組時間序列的數字相比較，這種分析稱為：",
+      "options": [
+        {"label": "A", "content": "比較分析"},
+        {"label": "B", "content": "技術分析"},
+        {"label": "C", "content": "橫斷面分析"},
+        {"label": "D", "content": "市場價值分析"}
+      ],
+      "answer": "A",
+      "topic": "財務分析",
+      "subtopic": "分析技術",
+      "concept": "比較分析"
+    },
+    {
+      "number": 14,
+      "question": "共同比分析又可稱為：",
+      "options": [
+        {"label": "A", "content": "技術分析"},
+        {"label": "B", "content": "比率分析"},
+        {"label": "C", "content": "水平分析"},
+        {"label": "D", "content": "垂直分析"}
+      ],
+      "answer": "D",
+      "topic": "財務分析",
+      "subtopic": "分析技術",
+      "concept": "垂直分析"
+    },
+    {
+      "number": 15,
+      "question": "資產負債表的共同比分析，應以何項目作為共同的分母？",
+      "options": [
+        {"label": "A", "content": "股東權益總額"},
+        {"label": "B", "content": "負債總額"},
+        {"label": "C", "content": "資產總額"},
+        {"label": "D", "content": "營業收入淨額"}
+      ],
+      "answer": "C",
+      "topic": "財務分析",
+      "subtopic": "垂直分析",
+      "concept": "資產負債表垂直分析"
+    },
+    {
+      "number": 16,
+      "question": "損益表的共同比分析，應以何項目作為共同的分母？",
+      "options": [
+        {"label": "A", "content": "稅後純益"},
+        {"label": "B", "content": "營業收入淨額"},
+        {"label": "C", "content": "營業毛利"},
+        {"label": "D", "content": "稅前淨利"}
+      ],
+      "answer": "B",
+      "topic": "財務分析",
+      "subtopic": "垂直分析",
+      "concept": "損益表垂直分析"
+    },
+    {
+      "number": 17,
+      "question": "財務比率分析的比較標準包括：",
+      "options": [
+        {"label": "A", "content": "與公司過去的歷史資料相比"},
+        {"label": "B", "content": "與產業的平均數相比"},
+        {"label": "C", "content": "與同業的其他公司相比"},
+        {"label": "D", "content": "以上皆可"}
+      ],
+      "answer": "D",
+      "topic": "財務分析",
+      "subtopic": "比率分析",
+      "concept": "比較標準"
+    },
+    {
+      "number": 18,
+      "question": "財務比率分析可以用來評估企業的：",
+      "options": [
+        {"label": "A", "content": "流動性"},
+        {"label": "B", "content": "獲利能力"},
+        {"label": "C", "content": "長期償債能力"},
+        {"label": "D", "content": "以上皆可"}
+      ],
+      "answer": "D",
+      "topic": "財務分析",
+      "subtopic": "比率分析",
+      "concept": "財務比率分析用途"
+    },
+    {
+      "number": 19,
+      "question": "財務比率分析無法用於評估企業的：",
+      "options": [
+        {"label": "A", "content": "現況"},
+        {"label": "B", "content": "盈餘管理程度"},
+        {"label": "C", "content": "過去績效"},
+        {"label": "D", "content": "過去風險"}
+      ],
+      "answer": "B",
+      "topic": "財務分析",
+      "subtopic": "比率分析",
+      "concept": "財務比率分析限制"
+    },
+    {
+      "number": 20,
+      "question": "下列有關財務比率的計算式，何者錯誤？",
+      "options": [
+        {"label": "A", "content": "流動比率=流動資產/流動負債"},
+        {"label": "B", "content": "總資產報酬率=本期純益/總資產"},
+        {"label": "C", "content": "存貨週轉率=平均存貨/營業成本"},
+        {"label": "D", "content": "應收帳款週轉率=營業收入/平均應收帳款"}
+      ],
+      "answer": "C",
+      "topic": "財務分析",
+      "subtopic": "比率計算",
+      "concept": "財務比率計算"
+    },
+    {
+      "number": 21,
+      "question": "A公司的流動資產大於流動負債，若A公司以現金償還應付帳款時，會產生什麼結果？",
+      "options": [
+        {"label": "A", "content": "流動比率增加"},
+        {"label": "B", "content": "流動比率減少"},
+        {"label": "C", "content": "營運資金增加"},
+        {"label": "D", "content": "營運資金減少"}
+      ],
+      "answer": "A",
+      "topic": "財務分析",
+      "subtopic": "流動性分析",
+      "concept": "流動比率變動"
+    },
+    {
+      "number": 22,
+      "question": "假設B公司的流動比率為192%，下列哪種方案可以提升公司的流動比率？",
+      "options": [
+        {"label": "A", "content": "購買存貨"},
+        {"label": "B", "content": "應收款項收現"},
+        {"label": "C", "content": "以現金購買存貨"},
+        {"label": "D", "content": "以發行長期負債所得金額償還短期負債"}
+      ],
+      "answer": "D",
+      "topic": "財務分析",
+      "subtopic": "流動性分析",
+      "concept": "提高流動比率"
+    },
+    {
+      "number": 23,
+      "question": "當公司的流動比率很高，代表該家公司：",
+      "options": [
+        {"label": "A", "content": "股東投入之資本很多"},
+        {"label": "B", "content": "有較佳的短期償債能力"},
+        {"label": "C", "content": "財務狀況優良"},
+        {"label": "D", "content": "營業成果良好"}
+      ],
+      "answer": "B",
+      "topic": "財務分析",
+      "subtopic": "流動性分析",
+      "concept": "流動比率意義"
+    },
+    {
+      "number": 24,
+      "question": "下列何者為酸性測驗之公式：",
+      "options": [
+        {"label": "A", "content": "流動資產除以流動負債"},
+        {"label": "B", "content": "速動資產除以速動負債"},
+        {"label": "C", "content": "速動資產除以流動負債"},
+        {"label": "D", "content": "速動負債除以流動資產"}
+      ],
+      "answer": "C",
+      "topic": "財務分析",
+      "subtopic": "流動性分析",
+      "concept": "速動比率"
+    },
+    {
+      "number": 25,
+      "question": "公司之稅前淨利$300,000，利息保障倍數為5倍，則稅前息前淨利為何？",
+      "options": [
+        {"label": "A", "content": "$375,000"},
+        {"label": "B", "content": "$350,000"},
+        {"label": "C", "content": "$250,000"},
+        {"label": "D", "content": "$225,000"}
+      ],
+      "answer": "A",
+      "topic": "財務分析",
+      "subtopic": "償債能力分析",
+      "concept": "利息保障倍數"
+    },
+    {
+      "number": 26,
+      "question": "公司之稅前淨利$200,000，利息支出$25,000，則利息保障倍數為何？",
+      "options": [
+        {"label": "A", "content": "10倍"},
+        {"label": "B", "content": "9倍"},
+        {"label": "C", "content": "8倍"},
+        {"label": "D", "content": "7倍"}
+      ],
+      "answer": "B",
+      "topic": "財務分析",
+      "subtopic": "償債能力分析",
+      "concept": "利息保障倍數計算"
+    },
+    {
+      "number": 27,
+      "question": "下列何項財務比率可以用來評估公司的長期償債能力？",
+      "options": [
+        {"label": "A", "content": "流動比率"},
+        {"label": "B", "content": "應收帳款週轉率"},
+        {"label": "C", "content": "負債權益比"},
+        {"label": "D", "content": "總資產週轉率"}
+      ],
+      "answer": "C",
+      "topic": "財務分析",
+      "subtopic": "償債能力分析",
+      "concept": "長期償債能力"
+    },
+    {
+      "number": 28,
+      "question": "C公司的資產總額為$6,000,000，權益總額為$3,500,000，則其負債比率為？",
+      "options": [
+        {"label": "A", "content": "42%"},
+        {"label": "B", "content": "58%"},
+        {"label": "C", "content": "171%"},
+        {"label": "D", "content": "240%"}
+      ],
+      "answer": "A",
+      "topic": "財務分析",
+      "subtopic": "償債能力分析",
+      "concept": "負債比率計算"
+    },
+    {
+      "number": 29,
+      "question": "D公司的負債權益比為60%，則D公司的負債比率為？",
+      "options": [
+        {"label": "A", "content": "72.5%"},
+        {"label": "B", "content": "67.5%"},
+        {"label": "C", "content": "62.5%"},
+        {"label": "D", "content": "37.5%"}
+      ],
+      "answer": "D",
+      "topic": "財務分析",
+      "subtopic": "償債能力分析",
+      "concept": "負債比率與負債權益比"
+    },
+    {
+      "number": 30,
+      "question": "E公司的負債比率等於0.67，則E公司的負債權益比為？",
+      "options": [
+        {"label": "A", "content": "3.03"},
+        {"label": "B", "content": "2.97"},
+        {"label": "C", "content": "2.03"},
+        {"label": "D", "content": "1.03"}
+      ],
+      "answer": "C",
+      "topic": "財務分析",
+      "subtopic": "償債能力分析",
+      "concept": "負債比率與負債權益比關係"
+    },
+    {
+      "number": 31,
+      "question": "A公司以$1,000,000債務發行公司債，由B公司購入，此項交易在兩家公司分別被列為：",
+      "options": [
+        {"label": "A", "content": "A公司：投資活動，B公司：籌資活動"},
+        {"label": "B", "content": "A公司：籌資活動，B公司：投資活動"},
+        {"label": "C", "content": "A、B公司皆為投資活動"},
+        {"label": "D", "content": "A、B公司皆為籌資活動"}
+      ],
+      "answer": "B",
+      "topic": "現金流量分析",
+      "subtopic": "現金流量分類",
+      "concept": "公司債現金流量分類"
+    },
+    {
+      "number": 32,
+      "question": "發放現金股利在現金流量表中，被歸類為：",
+      "options": [
+        {"label": "A", "content": "營業活動"},
+        {"label": "B", "content": "投資活動"},
+        {"label": "C", "content": "籌資活動"},
+        {"label": "D", "content": "股息活動"}
+      ],
+      "answer": "C",
+      "topic": "現金流量分析",
+      "subtopic": "現金流量分類",
+      "concept": "現金股利分類"
+    },
+    {
+      "number": 33,
+      "question": "現金流量表中哪一個活動的現金流量是最能夠用來評估企業繼續經營能力的資訊？",
+      "options": [
+        {"label": "A", "content": "來自營業活動的現金流量"},
+        {"label": "B", "content": "來自投資活動的現金流量"},
+        {"label": "C", "content": "來自籌資活動的現金流量"},
+        {"label": "D", "content": "不影響現金的投資籌資活動"}
+      ],
+      "answer": "A",
+      "topic": "現金流量分析",
+      "subtopic": "現金流量評估",
+      "concept": "營業活動現金流量"
+    },
+    {
+      "number": 34,
+      "question": "下列哪一項現金流入屬於籌資活動？",
+      "options": [
+        {"label": "A", "content": "銷售商品"},
+        {"label": "B", "content": "應收帳款收現"},
+        {"label": "C", "content": "現金增資"},
+        {"label": "D", "content": "利息收入"}
+      ],
+      "answer": "C",
+      "topic": "現金流量分析",
+      "subtopic": "現金流量分類",
+      "concept": "籌資活動現金流入"
+    },
+    {
+      "number": 35,
+      "question": "下列哪一項現金流入屬於投資活動？",
+      "options": [
+        {"label": "A", "content": "佣金收入"},
+        {"label": "B", "content": "處分資產收到現金"},
+        {"label": "C", "content": "向銀行借款"},
+        {"label": "D", "content": "股利收入"}
+      ],
+      "answer": "B",
+      "topic": "現金流量分析",
+      "subtopic": "現金流量分類",
+      "concept": "投資活動現金流入"
+    },
+    {
+      "number": 36,
+      "question": "下列哪一個財務比率是從現金流量的角度來評估公司的短期償債能力？",
+      "options": [
+        {"label": "A", "content": "速動比率"},
+        {"label": "B", "content": "現金流量充當比率"},
+        {"label": "C", "content": "現金再投資比率"},
+        {"label": "D", "content": "現金流量比率"}
+      ],
+      "answer": "D",
+      "topic": "現金流量分析",
+      "subtopic": "現金流量比率",
+      "concept": "現金流量比率意義"
+    },
+    {
+      "number": 37,
+      "question": "A公司的現金流量比率為243%，而所屬產業平均現金流量比率為202%，請問此透露什麼資訊？",
+      "options": [
+        {"label": "A", "content": "A公司的財務體質相當健全"},
+        {"label": "B", "content": "A公司有現金不足的疑慮"},
+        {"label": "C", "content": "A公司的獲利能力相當好"},
+        {"label": "D", "content": "A公司的經營能力不佳"}
+      ],
+      "answer": "A",
+      "topic": "現金流量分析",
+      "subtopic": "現金流量比率",
+      "concept": "現金流量比率分析"
+    },
+    {
+      "number": 38,
+      "question": "用來衡量一家企業由營業活動所產生的現金流量能夠支應公司時買所需要的資本支出和發放的現金股利的比率為？",
+      "options": [
+        {"label": "A", "content": "現金流量比率"},
+        {"label": "B", "content": "現金流量充當比率"},
+        {"label": "C", "content": "現金再投資比率"},
+        {"label": "D", "content": "自由現金流量"}
+      ],
+      "answer": "B",
+      "topic": "現金流量分析",
+      "subtopic": "現金流量比率",
+      "concept": "現金流量充當比率"
+    },
+    {
+      "number": 39,
+      "question": "下列有關「現金再投資比率」的敘述，何者正確？",
+      "options": [
+        {"label": "A", "content": "現金再投資比率愈高，表示公司的成長潛力愈大"},
+        {"label": "B", "content": "現金再投資比率愈高，表示公司會年度股利的發放愈多"},
+        {"label": "C", "content": "現金再投資比率愈高，表示公司自由現金流量愈低"},
+        {"label": "D", "content": "現金再投資比率愈高，表示公司投資金額愈低"}
+      ],
+      "answer": "A",
+      "topic": "現金流量分析",
+      "subtopic": "現金流量比率",
+      "concept": "現金再投資比率意義"
+    },
+    {
+      "number": 40,
+      "question": "下列對「自由現金流量」的敘述，何者正確？",
+      "options": [
+        {"label": "A", "content": "稅後純益減除必要投資支出"},
+        {"label": "B", "content": "可用來衡量每一般普通股股東可以分得的營業活動現金流量金額"},
+        {"label": "C", "content": "用來衡量企業營業活動所產生的現金流量是否能夠為股利必要投資支出"},
+        {"label": "D", "content": "營業活動淨現金流量扣除必要投資支出後，所剩餘的現金部位"}
+      ],
+      "answer": "D",
+      "topic": "現金流量分析",
+      "subtopic": "現金流量概念",
+      "concept": "自由現金流量意義"
+    },
+    {
+      "number": 41,
+      "question": "已知公司之銷貨毛利率為20%，銷貨成本為$400,000，可以得知銷貨毛利為：",
+      "options": [
+        {"label": "A", "content": "$80,000"},
+        {"label": "B", "content": "$100,000"},
+        {"label": "C", "content": "$120,000"},
+        {"label": "D", "content": "$500,000"}
+      ],
+      "answer": "B",
+      "topic": "獲利能力分析",
+      "subtopic": "毛利分析",
+      "concept": "銷貨毛利計算"
+    },
+    {
+      "number": 42,
+      "question": "相較於去年，A公司今年的銷貨增加，但其毛利率卻減少，可能的原因是？",
+      "options": [
+        {"label": "A", "content": "銷貨成本增加"},
+        {"label": "B", "content": "營業費用大增"},
+        {"label": "C", "content": "今年度有高額的營業外損失"},
+        {"label": "D", "content": "今年度有高額的營業外利益"}
+      ],
+      "answer": "A",
+      "topic": "獲利能力分析",
+      "subtopic": "毛利分析",
+      "concept": "毛利率變動原因"
+    },
+    {
+      "number": 43,
+      "question": "計算普通股每股盈餘時，分母應為：",
+      "options": [
+        {"label": "A", "content": "年底已發行股數"},
+        {"label": "B", "content": "年底流通在外股數"},
+        {"label": "C", "content": "全年度加權平均已發行股數"},
+        {"label": "D", "content": "全年度加權平均流通在外股數"}
+      ],
+      "answer": "D",
+      "topic": "獲利能力分析",
+      "subtopic": "每股盈餘",
+      "concept": "EPS計算"
+    },
+    {
+      "number": 44,
+      "question": "稅後純益除以營業收入的比率稱為：",
+      "options": [
+        {"label": "A", "content": "本利比"},
+        {"label": "B", "content": "股東權益報酬率"},
+        {"label": "C", "content": "總資產報酬率"},
+        {"label": "D", "content": "純益率"}
+      ],
+      "answer": "D",
+      "topic": "獲利能力分析",
+      "subtopic": "獲利能力指標",
+      "concept": "純益率"
+    },
+    {
+      "number": 45,
+      "question": "計算一家公司的損益兩平的銷售單位時，不需考慮下列哪一個項目？",
+      "options": [
+        {"label": "A", "content": "單位售價"},
+        {"label": "B", "content": "單位變動成本"},
+        {"label": "C", "content": "固定成本"},
+        {"label": "D", "content": "毛利率"}
+      ],
+      "answer": "D",
+      "topic": "獲利能力分析",
+      "subtopic": "損益兩平分析",
+      "concept": "損益兩平計算"
+    },
+    {
+      "number": 46,
+      "question": "B公司的稅後純益為$6,000,000，已知毛利率為20%，稅後純益率為10%，則B公司的銷貨成本為？",
+      "options": [
+        {"label": "A", "content": "$54,000,000"},
+        {"label": "B", "content": "$48,000,000"},
+        {"label": "C", "content": "$40,000,000"},
+        {"label": "D", "content": "$35,000,000"}
+      ],
+      "answer": "B",
+      "topic": "獲利能力分析",
+      "subtopic": "銷貨成本",
+      "concept": "銷貨成本計算"
+    },
+    {
+      "number": 47,
+      "question": "哪一個可以反映公司股東獲利的財務指標？",
+      "options": [
+        {"label": "A", "content": "每股股利"},
+        {"label": "B", "content": "負債比率"},
+        {"label": "C", "content": "股東權益報酬率"},
+        {"label": "D", "content": "每股淨值"}
+      ],
+      "answer": "C",
+      "topic": "獲利能力分析",
+      "subtopic": "獲利能力指標",
+      "concept": "股東權益報酬率"
+    },
+    {
+      "number": 48,
+      "question": "股東權益報酬率之計算公式為：",
+      "options": [
+        {"label": "A", "content": "毛利除以平均普通股股東權益"},
+        {"label": "B", "content": "營業利益除以平均普通股股東權益"},
+        {"label": "C", "content": "稅後純益除以平均普通股股東權益"},
+        {"label": "D", "content": "平均普通股股東權益除以淨利"}
+      ],
+      "answer": "C",
+      "topic": "獲利能力分析",
+      "subtopic": "獲利能力指標",
+      "concept": "股東權益報酬率計算"
+    },
+    {
+      "number": 49,
+      "question": "C公司在銷售淨額為$10,000,000，總資產為$40,000,000，而純益率為25%，試問C公司的資產報酬率為？",
+      "options": [
+        {"label": "A", "content": "8%"},
+        {"label": "B", "content": "6.25%"},
+        {"label": "C", "content": "5.5%"},
+        {"label": "D", "content": "4%"}
+      ],
+      "answer": "B",
+      "topic": "獲利能力分析",
+      "subtopic": "資產報酬率",
+      "concept": "資產報酬率計算"
+    },
+    {
+      "number": 50,
+      "question": "D公司的負債比率為40%，總資產週轉率為3.5，股東權益報酬率為12%，試問：D公司的純益率為？",
+      "options": [
+        {"label": "A", "content": "2.06%"},
+        {"label": "B", "content": "5.37%"},
+        {"label": "C", "content": "8.39%"},
+        {"label": "D", "content": "12.44%"}
+      ],
+      "answer": "A",
+      "topic": "獲利能力分析",
+      "subtopic": "純益率",
+      "concept": "純益率計算"
+    },
+    {
+      "number": 51,
+      "question": "下列何者為財務報表的使用人？",
+      "options": [
+        {"label": "A", "content": "經理人"},
+        {"label": "B", "content": "股票投資人"},
+        {"label": "C", "content": "供應商"},
+        {"label": "D", "content": "以上皆是"}
+      ],
+      "answer": "D",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表使用者",
+      "concept": "財務報表使用人"
+    },
+    {
+      "number": 52,
+      "question": "下列何者是A公司財務報表的內部使用人？",
+      "options": [
+        {"label": "A", "content": "借錢給A公司的銀行"},
+        {"label": "B", "content": "A公司的股東"},
+        {"label": "C", "content": "A公司的總經理"},
+        {"label": "D", "content": "稅捐處"}
+      ],
+      "answer": "C",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表使用者",
+      "concept": "內部使用人"
+    },
+    {
+      "number": 53,
+      "question": "下列何者不是財務報表的基本假設？",
+      "options": [
+        {"label": "A", "content": "經濟個體假設"},
+        {"label": "B", "content": "重要性假設"},
+        {"label": "C", "content": "繼續經營假設"},
+        {"label": "D", "content": "貨幣單位假設"}
+      ],
+      "answer": "B",
+      "topic": "財務報表基礎",
+      "subtopic": "會計假設",
+      "concept": "基本假設"
+    },
+    {
+      "number": 54,
+      "question": "即使因為通貨膨脹而造成物價波動，公司帳上購買辦公設備的成本都不會隨物價調整，這是基於下列何者？",
+      "options": [
+        {"label": "A", "content": "會計期間假設"},
+        {"label": "B", "content": "成本與效益考量"},
+        {"label": "C", "content": "貨幣單位假設"},
+        {"label": "D", "content": "行業特性"}
+      ],
+      "answer": "C",
+      "topic": "財務報表基礎",
+      "subtopic": "會計假設",
+      "concept": "貨幣單位假設"
+    },
+    {
+      "number": 55,
+      "question": "財務報表通常不會以「清算價值」作為評價基礎，這是基於下列何者？",
+      "options": [
+        {"label": "A", "content": "會計期間假設"},
+        {"label": "B", "content": "繼續經營假設"},
+        {"label": "C", "content": "客觀性原則"},
+        {"label": "D", "content": "充分揭露原則"}
+      ],
+      "answer": "B",
+      "topic": "財務報表基礎",
+      "subtopic": "會計假設",
+      "concept": "繼續經營假設"
+    },
+    {
+      "number": 56,
+      "question": "跨國企業需要編製母子公司合併報表，這是基於下列何者？",
+      "options": [
+        {"label": "A", "content": "繼續經營假設"},
+        {"label": "B", "content": "費用與收入配合原則"},
+        {"label": "C", "content": "歷史成本原則"},
+        {"label": "D", "content": "經濟個體假設"}
+      ],
+      "answer": "D",
+      "topic": "財務報表基礎",
+      "subtopic": "會計假設",
+      "concept": "經濟個體假設"
+    },
+    {
+      "number": 57,
+      "question": "下列何者不是財務報表「忠實表述」的構成要素？",
+      "options": [
+        {"label": "A", "content": "可驗證性"},
+        {"label": "B", "content": "完整性"},
+        {"label": "C", "content": "中立性"},
+        {"label": "D", "content": "免於錯誤"}
+      ],
+      "answer": "A",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表品質特性",
+      "concept": "忠實表述要素"
+    },
+    {
+      "number": 58,
+      "question": "下列何者是財務報表「強化性品質特性」的構成要素？",
+      "options": [
+        {"label": "A", "content": "時效性"},
+        {"label": "B", "content": "預測價值"},
+        {"label": "C", "content": "完整性"},
+        {"label": "D", "content": "中立性"}
+      ],
+      "answer": "A",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表品質特性",
+      "concept": "強化性品質特性"
+    },
+    {
+      "number": 59,
+      "question": "下列何者是財務報表「攸關性」的必要條件？",
+      "options": [
+        {"label": "A", "content": "完整、中立及免於錯誤"},
+        {"label": "B", "content": "可比性、可驗證性、時效性及可了解性"},
+        {"label": "C", "content": "預測價值或確認價值"},
+        {"label": "D", "content": "可比性、一致性或統一性"}
+      ],
+      "answer": "C",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表品質特性",
+      "concept": "攸關性要素"
+    },
+    {
+      "number": 60,
+      "question": "下列何者不是編製財務報表的目的？",
+      "options": [
+        {"label": "A", "content": "提供有關企業清算價值的資訊"},
+        {"label": "B", "content": "提供關於經濟資源、請求權、及其變動的資訊"},
+        {"label": "C", "content": "提供未來現金流量的資訊"},
+        {"label": "D", "content": "提供投資者、債權人有用的資訊"}
+      ],
+      "answer": "A",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表目的",
+      "concept": "財務報表目的"
+    },
+    {
+      "number": 61,
+      "question": "下列何種品質特性要素並非忠實表述之構成要素？",
+      "options": [
+        {"label": "A", "content": "可驗證性"},
+        {"label": "B", "content": "完整性"},
+        {"label": "C", "content": "中立性"},
+        {"label": "D", "content": "免於錯誤"}
+      ],
+      "answer": "A",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表品質特性",
+      "concept": "忠實表述要素"
+    },
+    {
+      "number": 62,
+      "question": "關於重大性，下列何者正確？",
+      "options": [
+        {"label": "A", "content": "對於不重大之項目，並非可以不必處理或列報"},
+        {"label": "B", "content": "編製年度財務報表時應考慮重大性，但不適用於財務季報表"},
+        {"label": "C", "content": "重大性僅針對金額小於$1,000之項目"},
+        {"label": "D", "content": "重大性是會計師被控告執業失當時的自辯理由"}
+      ],
+      "answer": "A",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表品質特性",
+      "concept": "重大性原則"
+    },
+    {
+      "number": 63,
+      "question": "財務資訊具備攸關性應具備哪些必要條件？",
+      "options": [
+        {"label": "A", "content": "完整、中立及免於錯誤"},
+        {"label": "B", "content": "可比性、可驗證性、時效性及可了解性"},
+        {"label": "C", "content": "預測價值或確認價值"},
+        {"label": "D", "content": "可比性、一致性或統一性"}
+      ],
+      "answer": "C",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表品質特性",
+      "concept": "攸關性條件"
+    },
+    {
+      "number": 64,
+      "question": "強化性品質特性包括：",
+      "options": [
+        {"label": "A", "content": "攸關性與忠實表述"},
+        {"label": "B", "content": "可比性、可驗證性、時效性及可了解性"},
+        {"label": "C", "content": "預測價值或確認價值"},
+        {"label": "D", "content": "完整、中立及免於錯誤"}
+      ],
+      "answer": "B",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表品質特性",
+      "concept": "強化性品質特性內容"
+    },
+    {
+      "number": 65,
+      "question": "複合式書局既賣書也賣咖啡，但它的財務報表都是用新臺幣來表達，這是基於何種假設？",
+      "options": [
+        {"label": "A", "content": "行業特性"},
+        {"label": "B", "content": "貨幣單位"},
+        {"label": "C", "content": "成本效益"},
+        {"label": "D", "content": "繼續經營"}
+      ],
+      "answer": "B",
+      "topic": "財務報表基礎",
+      "subtopic": "會計假設",
+      "concept": "貨幣單位假設應用"
+    },
+    {
+      "number": 66,
+      "question": "某一半導體研究中心，以其業主所投入的資金，購置了一部機器設備共$2,400萬，會計人員隨即以成本入帳，對外開始營業，下列何者不是該研究中心會計所依據的財務報導假設？",
+      "options": [
+        {"label": "A", "content": "經濟個體"},
+        {"label": "B", "content": "繼續經營"},
+        {"label": "C", "content": "貨幣單位"},
+        {"label": "D", "content": "重要性"}
+      ],
+      "answer": "D",
+      "topic": "財務報表基礎",
+      "subtopic": "會計假設",
+      "concept": "財務報導基礎假設"
+    },
+    {
+      "number": 67,
+      "question": "下列何者不是企業財務報表的外部使用人？",
+      "options": [
+        {"label": "A", "content": "董事長"},
+        {"label": "B", "content": "供應商"},
+        {"label": "C", "content": "稅捐機關"},
+        {"label": "D", "content": "債權人"}
+      ],
+      "answer": "A",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表使用者",
+      "concept": "外部使用人"
+    },
+    {
+      "number": 68,
+      "question": "下列何者不是財務報表的利害關係人？",
+      "options": [
+        {"label": "A", "content": "政府"},
+        {"label": "B", "content": "股東"},
+        {"label": "C", "content": "借錢給該公司的銀行"},
+        {"label": "D", "content": "經濟犯"}
+      ],
+      "answer": "D",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表使用者",
+      "concept": "財務報表利害關係人"
+    },
+    {
+      "number": 69,
+      "question": "下列何者並非一套完整的財務報表所應包括之資訊？",
+      "options": [
+        {"label": "A", "content": "本期損益及綜合損益表"},
+        {"label": "B", "content": "附註"},
+        {"label": "C", "content": "前一期之期初資產負債表"},
+        {"label": "D", "content": "股東報告書"}
+      ],
+      "answer": "D",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表組成",
+      "concept": "完整財務報表內容"
+    },
+    {
+      "number": 70,
+      "question": "下列何者非一般用途財務報導的目的？",
+      "options": [
+        {"label": "A", "content": "提供投資者、債權人有用的資訊"},
+        {"label": "B", "content": "提供關於經濟資源、請求權、及其變動的資訊"},
+        {"label": "C", "content": "提供未來現金流量的資訊"},
+        {"label": "D", "content": "提供關於企業清算價值的資訊"}
+      ],
+      "answer": "D",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表目的",
+      "concept": "財務報導目的"
+    },
+    {
+      "number": 71,
+      "question": "下列何種品質特性要素並非忠實表述之構成要素？",
+      "options": [
+        {"label": "A", "content": "可驗證性"},
+        {"label": "B", "content": "完整性"},
+        {"label": "C", "content": "中立性"},
+        {"label": "D", "content": "免於錯誤"}
+      ],
+      "answer": "A",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表品質特性",
+      "concept": "忠實表述要素再述"
+    },
+    {
+      "number": 72,
+      "question": "關於重大性，下列何者正確？",
+      "options": [
+        {"label": "A", "content": "對於不重大之項目，並非可以不必處理或列報"},
+        {"label": "B", "content": "編製年度財務報表時應考慮重大性，但不適用於財務季報表"},
+        {"label": "C", "content": "重大性僅針對金額小於$1,000之項目"},
+        {"label": "D", "content": "重大性是會計師被控告執業失當時的自辯理由"}
+      ],
+      "answer": "A",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表品質特性",
+      "concept": "重大性原則再述"
+    },
+    {
+      "number": 73,
+      "question": "下列何者為財務報表的使用人？",
+      "options": [
+        {"label": "A", "content": "經理人"},
+        {"label": "B", "content": "股票投資人"},
+        {"label": "C", "content": "供應商"},
+        {"label": "D", "content": "以上皆是"}
+      ],
+      "answer": "D",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表使用者",
+      "concept": "財務報表使用人再述"
+    },
+    {
+      "number": 74,
+      "question": "下列何者是A公司財務報表的內部使用人？",
+      "options": [
+        {"label": "A", "content": "借錢給A公司的銀行"},
+        {"label": "B", "content": "A公司的股東"},
+        {"label": "C", "content": "A公司的總經理"},
+        {"label": "D", "content": "稅捐處"}
+      ],
+      "answer": "C",
+      "topic": "財務報表基礎",
+      "subtopic": "財務報表使用者",
+      "concept": "內部使用人再述"
+    }
+  ]
+}
