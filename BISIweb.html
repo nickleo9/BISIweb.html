@@ -1176,8 +1176,11 @@ function showResult() {
             
             // 遍歷該主題下的每個錯題
             questions.forEach((q, index) => {
-                const userAnswerIndex = state.userAnswers[state.questions.indexOf(q)].charCodeAt(0) - 65;
-                const userAnswerText = q.options[userAnswerIndex] || '未作答';
+                const userAnswer = state.userAnswers[state.questions.indexOf(q)];
+                // 找到用戶選擇的選項物件
+                const userChoice = q.options.find(opt => opt.label === userAnswer);
+                // 找到正確答案的選項物件
+                const correctChoice = q.options.find(opt => opt.label === q.answer);
                 
                 // 生成唯一ID用於識別此題
                 const questionId = `wrong-q-${topic.replace(/\s+/g, '-')}-${index}`;
@@ -1198,9 +1201,9 @@ function showResult() {
                         </div>
                         
                         <div class="ps-3 mt-1">
-                            <div class="text-danger">您的答案: ${state.userAnswers[state.questions.indexOf(q)]} (${userAnswerText})</div>
-                            <div class="text-success">正確答案: ${q.correct_answer_letter} (${q.options[q.correct_answer_index]})</div>
-                            <div class="mt-1">分類: ${q.topic} > ${q.subtopic}</div>
+                            <div class="text-danger">您的答案: ${userAnswer} (${userChoice ? userChoice.content : '未作答'})</div>
+                            <div class="text-success">正確答案: ${q.answer} (${correctChoice ? correctChoice.content : '未知'})</div>
+                            <div class="mt-1">分類: ${q.topic || '未分類'} > ${q.subtopic || '未分類'}</div>
                             
                             <!-- 可折疊的解析區域 -->
                             <div class="collapse mt-2" id="${questionId}">
