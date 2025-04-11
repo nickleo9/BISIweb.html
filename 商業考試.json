@@ -33,7 +33,7 @@
       "question": "以下對「會計恆等式」的敘述，何者正確？",
       "options": [
         {"label": "A", "content": "企業的資產只有來自於業主的貢獻"},
-        {"label": "B", "content": "權益總額等於資產總額加除負債總額"},
+        {"label": "B", "content": "權益總額等於資產總額扣除負債總額"},
         {"label": "C", "content": "企業的資產只有來自於債權人的資金融通"},
         {"label": "D", "content": "權益總額恆等於資產總額"}
       ],
@@ -133,7 +133,7 @@
         {"label": "A", "content": "營業活動現金流量"},
         {"label": "B", "content": "投資活動現金流量"},
         {"label": "C", "content": "籌資活動現金流量"},
-        {"label": "D", "content": "同店五年期業績調入存貨"}
+        {"label": "D", "content": "開立半年期票據購入存貨"}
       ],
       "answer": "D",
       "topic": "財務報表類型",
@@ -901,7 +901,7 @@
       "question": "複合式書局既賣書也賣咖啡，但它的財務報表都是用新臺幣來表達，這是基於何種假設？",
       "options": [
         {"label": "A", "content": "行業特性"},
-        {"label": "B", "content": "貨幣單位"},
+        {"label": "B", "content": "貨幣價值"},
         {"label": "C", "content": "成本效益"},
         {"label": "D", "content": "繼續經營"}
       ],
@@ -959,7 +959,7 @@
         {"label": "A", "content": "本期損益及綜合損益表"},
         {"label": "B", "content": "附註"},
         {"label": "C", "content": "前一期之期初資產負債表"},
-        {"label": "D", "content": "股東報告書"}
+        {"label": "D", "content": "致股東報告書"}
       ],
       "answer": "D",
       "topic": "財務報表基礎",
