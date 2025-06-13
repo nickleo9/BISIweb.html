@@ -2,357 +2,756 @@
 <html lang="zh-TW">
 <head>
 <link rel="icon" href="data:,">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商業財務單選題練習系統</title>
+    <title>金融證照模擬考試系統</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-<script>
-
-    let quizData = [];
-
-    async function loadQuizData() {
-        try {
-            const response = await fetch('商業考試.json');
-            const data = await response.json();
-            quizData = data.questions; // 確保 quizData 是 questions 陣列
-            console.log('題庫已成功載入', quizData);
-        } catch (error) {
-            console.error('題庫載入失敗:', error);
-            alert('題庫載入失敗，請檢查檔案是否存在或格式是否正確！');
-        }
-    }
-
-    // 頁面載入時自動呼叫
-    document.addEventListener('DOMContentLoaded', loadQuizData);
-</script>
-
-
     <style>
         body {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             font-family: 'Microsoft JhengHei', Arial, sans-serif;
-            padding-bottom: 70px;
+            padding: 10px;
+            padding-bottom: 0;
+            min-height: 100vh;
+            margin-bottom: 120px;
+            overflow-x: hidden;
         }
+        
+        .main-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 10px auto;
+            margin-bottom: 130px;
+            max-width: 95%;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            min-height: calc(100vh - 250px);
+            padding-bottom: 40px;
+        }
+        
+        .quiz-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .quiz-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .quiz-status {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 3;
+        }
+        
+        .quiz-status.active {
+            background: #28a745;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .database-selector {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .database-selector.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            filter: grayscale(70%);
+            position: relative;
+        }
+        
+        .database-selector.disabled::after {
+            content: '🔒 測驗進行中，無法切換題庫';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        
+        .database-card {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .database-card:hover:not(.disabled) {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-3px);
+        }
+        
+        .database-card.selected {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
         .quiz-container {
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin: 20px;
+            margin-bottom: 40px;
         }
+        
         .option-label {
             display: block;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 10px 15px;
-            margin-bottom: 10px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s ease;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .option-label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
         .option-label:hover {
-            background-color: #f8f9fa;
+            background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+            border-color: #2196f3;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
         }
+        
+        .option-label:hover::before {
+            left: 100%;
+        }
+        
         .option-input:checked + .option-label {
-            background-color: #d1e7ff;
-            border-color: #0d6efd;
+            background: linear-gradient(145deg, #c8e6c9, #a5d6a7);
+            border-color: #4caf50;
+            color: #2e7d32;
+            font-weight: bold;
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
         }
+        
+        .option-input:checked + .option-label::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: #4caf50;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            animation: checkmark 0.3s ease-in-out;
+        }
+        
+        @keyframes checkmark {
+            0% { transform: translateY(-50%) scale(0); }
+            50% { transform: translateY(-50%) scale(1.2); }
+            100% { transform: translateY(-50%) scale(1); }
+        }
+        
         .option-input {
             display: none;
         }
-        .timer {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #FF5722;
-        }
-        .timer.warning {
-            color: #dc3545;
-            animation: blink 1s infinite;
-        }
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+        
         .explanation-box {
-            background-color: #f8f9fa;
-            border-left: 5px solid #0d6efd;
-            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #007bff;
+            padding: 25px;
             margin-top: 20px;
-            border-radius: 5px;
-        }
-        .correct {
-            color: #198754;
-            font-weight: bold;
-        }
-        .incorrect {
-            color: #dc3545;
-            font-weight: bold;
-        }
-        .highlight {
-            background-color: #fff3cd;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-        .nav-pills .nav-link.active {
-            background-color: #0d6efd;
-        }
-        .topic-badge {
-            background-color: #6c757d;
-            color: white;
-            font-size: 0.8rem;
-            padding: 5px 10px;
-            border-radius: 15px;
-            margin-right: 5px;
-        }
-        .subtopic-badge {
-            background-color: #0dcaf0;
-            color: white;
-            font-size: 0.8rem;
-            padding: 5px 10px;
-            border-radius: 15px;
+            border-radius: 12px;
+            min-height: 150px;
+            max-height: 500px;
+            overflow-y: auto;
+            word-wrap: break-word;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
-        /* 響應式調整 */
-        @media (max-width: 768px) {
-            .question-text {
-                font-size: 1.1rem;
-            }
-            .option-label {
-                padding: 8px 12px;
-            }
-            .timer {
-                font-size: 1rem;
-            }
-            .nav-item {
-                margin-bottom: 5px;
-            }
+        .explanation-box::-webkit-scrollbar {
+            width: 8px;
         }
         
-        /* 底部固定的導航欄 */
+        .explanation-box::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+        
+        .explanation-box::-webkit-scrollbar-thumb {
+            background: #007bff;
+            border-radius: 5px;
+        }
+        
+        .explanation-box::-webkit-scrollbar-thumb:hover {
+            background: #0056b3;
+        }
+        
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: white;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            padding: 10px 0;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 250, 0.98));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            z-index: 1040;
+            padding: 20px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
         }
         
-        /* 結果視窗樣式 */
-        .result-container {
-            max-height: 70vh;
-            overflow-y: auto;
+        .btn {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 12px 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            font-size: 0.85rem;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        /* 進度條樣式 */
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
         .progress {
-            height: 10px;
-            margin-bottom: 15px;
+            height: 12px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .progress-bar {
-            background-color: #198754;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 0.5s ease;
         }
         
-        /* 模式選擇按鈕 */
-        .mode-btn.active {
-            background-color: #0d6efd !important;
+        .badge-custom {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-size: 0.9rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin: 5px;
+        }
+        
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #FF5722;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 25px;
+        }
+        
+        .timer.warning {
+            color: #dc3545;
+            animation: blink 1s infinite;
+            background: rgba(255, 0, 0, 0.1);
+        }
+        
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .correct {
+            color: #198754;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .incorrect {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            background: linear-gradient(45deg, #fff3cd, #ffeaa7);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 1rem;
+            line-height: 1.6;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .nav-brand {
+            background: linear-gradient(45deg, #667eea, #764ba2);
             color: white !important;
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 8px 16px !important;
         }
         
-        /* 美化主介面 */
-        .app-card {
-            transition: transform 0.3s, box-shadow 0.3s;
+        .settings-panel {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
-        .app-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        .settings-panel.disabled {
+            opacity: 0.6;
+            pointer-events: none;
         }
         
-        /* 遮罩效果 */
+        .mode-btn {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+            font-weight: 600;
+        }
+        
+        .mode-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .back-to-selection {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .back-to-selection:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0,0,0,0.7);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 2000;
+            flex-direction: column;
         }
         
         .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #fff;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
         
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        #ai-model-select {
-            transition: opacity 0.3s ease-in-out;
-        }
         
-        #ai-model-select.d-none {
-            opacity: 0;
-            height: 0;
-            overflow: hidden;
-        }
-        
-        #ai-model-select:not(.d-none) {
-            opacity: 1;
-            height: auto;
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
         }
 
+        .review-modes {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .review-mode-item {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .review-mode-item:hover {
+            background: rgba(40, 167, 69, 0.1);
+            transform: translateX(5px);
+        }
+
+        .review-mode-item.selected {
+            background: #28a745;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                margin-bottom: 130px;
+            }
+            
+            .main-container {
+                margin: 5px auto;
+                margin-bottom: 140px;
+                border-radius: 15px;
+                max-width: 98%;
+                padding-bottom: 50px;
+            }
+            
+            .quiz-header {
+                padding: 15px;
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .database-selector, .quiz-container, .settings-panel {
+                margin: 10px;
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .database-card {
+                padding: 15px;
+                margin: 8px 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center my-4">商業財務單選題練習系統</h1>
-        
-        <!-- 設定面板 -->
-        <div class="card mb-4 app-card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">測驗設置</h5>
+    <!-- 頂部導航 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand nav-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>金融證照模擬考試系統
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="save-btn">
+                            <i class="fas fa-save me-1"></i>儲存進度
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="export-btn">
+                            <i class="fas fa-download me-1"></i>匯出錯題
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="stats-btn">
+                            <i class="fas fa-chart-bar me-1"></i>學習統計
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="help-btn">
+                            <i class="fas fa-question-circle me-1"></i>使用說明
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label for="question-count" class="form-label">題目數量</label>
-                        <select id="question-count" class="form-select">
-                            <option value="10">10題</option>
-                            <option value="20">20題</option>
-                            <option value="40">40題</option>
-                            <option value="80">80題</option>
-                        </select>
-                    </div>
-                    <div class="col-md-8">
-                        <label class="form-label">練習模式</label>
-                        <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-outline-primary mode-btn active" data-mode="practice">練習模式</button>
-                            <button class="btn btn-outline-primary mode-btn" data-mode="exam">模擬考試</button>
-                            <button class="btn btn-outline-primary mode-btn" data-mode="wrong" id="wrong-btn">錯題複習</button>
+        </div>
+    </nav>
+
+    <div style="height: 70px;"></div>
+
+    <div class="main-container">
+        <div id="quiz-status" class="quiz-status" style="display: none;">
+            <i class="fas fa-lock me-1"></i>測驗進行中
+        </div>
+        
+        <div class="quiz-header">
+            <h1><i class="fas fa-chart-line me-3"></i>金融證照模擬考試系統</h1>
+            <p class="mb-0">金融市場實務 • 財務報表分析 • 品質管理</p>
+        </div>
+        
+        <!-- 題庫選擇區 -->
+        <div class="database-selector" id="database-selector">
+            <h3 class="mb-4"><i class="fas fa-database me-2"></i>選擇考試科目</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="database-card" data-type="financial-market">
+                        <div class="text-center">
+                            <i class="fas fa-chart-line fa-3x mb-3" style="color: #ffd700;"></i>
+                            <h5>金融市場實務</h5>
+                            <p class="mb-2">0622 0910 金融市場實務</p>
+                            <small>⭐ 15題 - 金融商品與投資工具</small>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label">解析模式</label>
-                        <div class="d-flex gap-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="explanation-mode" id="database-mode" value="database" checked>
-                                <label class="form-check-label" for="database-mode">資料庫解析</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="explanation-mode" id="ai-mode" value="ai">
-                                <label class="form-check-label" for="ai-mode">AI生成解析</label>
-                            </div>
-                        </div>
-                        <!-- 添加AI模型選擇下拉菜單，預設隱藏 -->
-                        <div id="ai-model-select" class="mt-2 d-none">
-                        <label for="ai-model" class="form-label">選擇AI模型</label>
-                        <select id="ai-model" class="form-select">
-                        <option value="gpt-4o" selected>GPT-4o (預設)</option>
-                        <option value="claude-3.7-sonnet">Claude 3.7 Sonnet</option>
-                        <option value="grok-3">Grok 3</option>
-                        </select>
-                        </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="database-card" data-type="financial-analysis">
+                        <div class="text-center">
+                            <i class="fas fa-calculator fa-3x mb-3" style="color: #28a745;"></i>
+                            <h5>財務報表分析</h5>
+                            <p class="mb-2">0622 1015 財務報表分析</p>
+                            <small>📊 6題 - 財務比率與現金流量</small>
                         </div>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button id="start-btn" class="btn btn-success">
-                            <i class="fas fa-play me-1"></i> 開始測驗
-                        </button>
-                    </div>
-                    <div class="col-md-4 d-flex align-items-center">
-                        <div id="timer" class="timer ms-auto">剩餘時間: --:--</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="database-card" data-type="quality-management">
+                        <div class="text-center">
+                            <i class="fas fa-cogs fa-3x mb-3" style="color: #17a2b8;"></i>
+                            <h5>品質管理</h5>
+                            <p class="mb-2">0622 1120 品質管理</p>
+                            <small>⚙️ 9題 - PDCA與品質管理工具</small>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- 問題卡片 -->
+        <!-- 設定面板 -->
+        <div id="settings-panel" class="settings-panel">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient text-white text-center py-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>測驗設定</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-list-ol me-2 text-primary"></i>題目數量
+                            </label>
+                            <select id="question-count" class="form-select">
+                                <option value="all" selected>全部題目</option>
+                                <option value="5">5題 - 快速練習</option>
+                                <option value="10">10題 - 標準練習</option>
+                            </select>
+                            <small class="text-muted mt-1 d-block" id="question-count-hint">請先選擇科目</small>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-play-circle me-2 text-success"></i>練習模式
+                            </label>
+                            <div class="d-flex flex-wrap gap-1">
+                                <button class="mode-btn active" data-mode="practice">
+                                    <i class="fas fa-book me-1"></i>練習模式
+                                </button>
+                                <button class="mode-btn" data-mode="exam">
+                                    <i class="fas fa-clock me-1"></i>模擬考試
+                                </button>
+                            </div>
+                            <div class="review-modes mt-2 d-none" id="review-modes-section">
+                                <h6 class="mb-2"><i class="fas fa-redo me-2"></i>複習模式選擇</h6>
+                                <div class="review-mode-item" data-review-mode="wrong">
+                                    <i class="fas fa-times-circle me-2"></i>錯題複習
+                                </div>
+                                <div class="review-mode-item" data-review-mode="all">
+                                    <i class="fas fa-list me-2"></i>全題複習
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-lightbulb me-2 text-warning"></i>解析顯示
+                            </label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="show-explanation" checked>
+                                <label class="form-check-label" for="show-explanation">
+                                    答題後顯示解析
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-rocket me-2 text-danger"></i>準備就緒
+                            </label>
+                            <button id="start-btn" class="btn btn-danger w-100 mb-2" disabled>
+                                <i class="fas fa-play me-2"></i>開始練習
+                            </button>
+                            <button id="review-btn-main" class="btn btn-success w-100 mb-2 d-none">
+                                <i class="fas fa-redo me-2"></i>開始複習
+                            </button>
+                            <div id="timer" class="timer text-center">
+                                <i class="fas fa-clock me-2"></i>請先選擇科目
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 問題區域 -->
         <div id="quiz-container" class="quiz-container d-none">
-            <!-- 進度指示器 -->
+            <button id="back-to-selection" class="back-to-selection">
+                <i class="fas fa-arrow-left me-2"></i>返回科目選擇
+            </button>
+            
             <div class="progress mb-3">
                 <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%"></div>
             </div>
             
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 id="question-number" class="mb-0">問題 1/10</h5>
-                <div id="stats-display" class="badge bg-info">得分: 0/0 (0%)</div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 id="question-number" class="mb-0">問題 1/15</h5>
+                <div class="d-flex gap-2">
+                    <span id="database-badge" class="badge-custom">金融市場實務</span>
+                    <span id="stats-display" class="badge bg-info">得分: 0/0 (0%)</span>
+                </div>
             </div>
             
-            <!-- 問題內容 -->
-            <h4 id="question-text" class="question-text mb-4">請點擊「開始測驗」開始練習</h4>
+            <h4 id="question-text" class="mb-4">載入題目中...</h4>
             
-            <!-- 選項 -->
             <div id="options-container" class="mb-4">
                 <!-- 選項會在JavaScript中動態生成 -->
             </div>
             
-            <!-- 答案解析區 -->
             <div id="explanation-box" class="explanation-box d-none">
-                <h5 class="mb-3">答案解析</h5>
+                <h5 class="mb-3"><i class="fas fa-lightbulb me-2"></i>答案解析</h5>
                 <div id="explanation-content"></div>
                 <div class="mt-3">
-                    <span id="topic-badge" class="topic-badge"></span>
-                    <span id="subtopic-badge" class="subtopic-badge"></span>
+                    <span id="topic-badge" class="badge bg-secondary me-2"></span>
+                    <span id="subtopic-badge" class="badge bg-info"></span>
                 </div>
             </div>
         </div>
         
-        <!-- 底部導航按鈕 -->
-        <div class="bottom-nav">
-            <div class="container">
-                <div class="row justify-content-between">
-                    <div class="col-4 col-md-3">
+        <!-- 底部導航 -->
+        <div class="bottom-nav" id="bottom-navigation">
+            <div class="container-fluid">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-2">
                         <button id="prev-btn" class="btn btn-secondary w-100" disabled>
-                            <i class="fas fa-arrow-left me-1"></i> 上一題
+                            <i class="fas fa-arrow-left me-1"></i> 
+                            <span class="d-none d-sm-inline">上一題</span>
                         </button>
                     </div>
-                    <div class="col-4 col-md-3">
+                    <div class="col-2">
                         <button id="submit-btn" class="btn btn-primary w-100" disabled>
-                            <i class="fas fa-check me-1"></i> 提交
+                            <i class="fas fa-check me-1"></i> 
+                            <span class="d-none d-sm-inline">提交</span>
                         </button>
                     </div>
-                    <div class="col-4 col-md-3">
+                    <div class="col-2">
                         <button id="next-btn" class="btn btn-warning w-100" disabled>
-                            下一題 <i class="fas fa-arrow-right ms-1"></i>
+                            <span class="d-none d-sm-inline">下一題</span>
+                            <i class="fas fa-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                    <div class="col-2">
+                        <button id="finish-btn" class="btn btn-success w-100" disabled>
+                            <i class="fas fa-flag-checkered me-1"></i> 
+                            <span class="d-none d-sm-inline">完成</span>
+                        </button>
+                    </div>
+                    <div class="col-2">
+                        <button id="explanation-btn" class="btn btn-info w-100" disabled>
+                            <i class="fas fa-lightbulb me-1"></i> 
+                            <span class="d-none d-sm-inline">查看解析</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- 測驗結果模態框 -->
-    <div class="modal fade" id="result-modal" tabindex="-1" aria-hidden="true">
+
+    <!-- 模態框 -->
+    <div class="modal fade" id="result-modal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title">測驗結果</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="result-content" class="result-container">
-                        <!-- 結果內容會在JavaScript中動態生成 -->
-                    </div>
+                    <div id="result-content" style="max-height: 70vh; overflow-y: auto;"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
@@ -361,19 +760,16 @@
             </div>
         </div>
     </div>
-    
-    <!-- 統計資料模態框 -->
-    <div class="modal fade" id="stats-modal" tabindex="-1" aria-hidden="true">
+
+    <div class="modal fade" id="stats-modal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title">學習統計</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="stats-content">
-                        <!-- 統計內容會在JavaScript中動態生成 -->
-                    </div>
+                    <div id="stats-content"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
@@ -382,40 +778,66 @@
             </div>
         </div>
     </div>
-    
-    <!-- 使用說明模態框 -->
-    <div class="modal fade" id="help-modal" tabindex="-1" aria-hidden="true">
+
+    <div class="modal fade" id="help-modal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title">使用說明</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <h5>練習模式</h5>
-                    <p>適合日常學習，每題作答後即時顯示答案與解析</p>
-                    <ul>
-                        <li>選擇題目數量 (10/20/40/80題)</li>
-                        <li>點擊「開始測驗」按鈕開始練習</li>
-                        <li>選擇答案後點擊「提交答案」</li>
-                        <li>查看解析後點擊「下一題」繼續</li>
-                    </ul>
+                    <h5><i class="fas fa-book me-2 text-primary"></i>三大科目重點</h5>
                     
-                    <h5>模擬考試</h5>
-                    <p>模擬真實考試環境，完成所有題目後才顯示結果</p>
-                    <ul>
-                        <li>選擇80題進行完整模擬考</li>
-                        <li>模擬考試時長為90分鐘，系統會自動計時</li>
-                        <li>時間結束時會自動結算成績</li>
-                        <li>剩餘時間少於5分鐘時計時器會變紅提醒</li>
-                        <li>完成所有題目後會顯示成績及錯題分析</li>
-                    </ul>
+                    <div class="card mb-3">
+                        <div class="card-header bg-warning">
+                            <h6 class="mb-0">📈 金融市場實務 (15題)</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="mb-0">
+                                <li>當沖交易與融資融券</li>
+                                <li>行為財務學理論</li>
+                                <li>基金與ETF產品</li>
+                                <li>債券市場與風險</li>
+                                <li>衍生性商品</li>
+                            </ul>
+                        </div>
+                    </div>
                     
-                    <h5>錯題複習</h5>
-                    <p>集中練習之前答錯的題目</p>
+                    <div class="card mb-3">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0">📊 財務報表分析 (6題)</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="mb-0">
+                                <li>資產負債表分析</li>
+                                <li>財務比率計算</li>
+                                <li>現金流量表編制</li>
+                                <li>企業活動分析</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-3">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">⚙️ 品質管理 (9題)</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="mb-0">
+                                <li>PDCA循環與持續改善</li>
+                                <li>品質管理工具與手法</li>
+                                <li>標竿學習與流程改善</li>
+                                <li>全面品質管理</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <h6>🎯 使用建議</h6>
                     <ul>
-                        <li>系統會自動從歷史記錄中提取曾經答錯的題目</li>
-                        <li>針對性強化練習，提高學習效率</li>
+                        <li>先選擇科目，系統會自動調整題目數量</li>
+                        <li>建議使用練習模式，可立即查看解析</li>
+                        <li>錯題會自動記錄，可進行錯題複習</li>
+                        <li>定期查看學習統計，掌握學習進度</li>
                     </ul>
                 </div>
                 <div class="modal-footer">
@@ -424,1055 +846,1696 @@
             </div>
         </div>
     </div>
-    
-    <!-- 關於模態框 -->
-    <div class="modal fade" id="about-modal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title">關於</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <h4>生成式AI認證單選題練習系統</h4>
-                    <p class="mb-1">版本: 1.0.0</p>
-                    <p class="mb-1">發布日期: 2025年3月18日</p>
-                    <hr>
-                    <p>本系統旨在幫助使用者準備「生成式AI能力認證」考試，提供單選題形式的練習功能，包含即時評分、錯題分析、學習統計等功能，幫助您高效備考。</p>
-                    <p class="mb-0">祝您考試順利！</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 導航按鈕 -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">AI認證練習</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="save-btn">儲存進度</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="export-btn">匯出錯題</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="stats-btn">學習統計</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="help-btn">使用說明</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="about-btn">關於</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    
-    <!-- 遮罩層與加載動畫 -->
+
     <div id="loading-overlay" class="overlay d-none">
         <div class="loader"></div>
+        <div id="loading-text" class="loading-text">處理中...</div>
     </div>
-    
 
-    
-    <!-- JavaScript 實現 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        // DOM元素
-        const startBtn = document.getElementById('start-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        const submitBtn = document.getElementById('submit-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const quizContainer = document.getElementById('quiz-container');
-        const questionNumber = document.getElementById('question-number');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const explanationBox = document.getElementById('explanation-box');
-        const explanationContent = document.getElementById('explanation-content');
-        const topicBadge = document.getElementById('topic-badge');
-        const subtopicBadge = document.getElementById('subtopic-badge');
-        const timerElement = document.getElementById('timer');
-        const statsDisplay = document.getElementById('stats-display');
-        const progressBar = document.getElementById('progress-bar');
-        const saveBtn = document.getElementById('save-btn');
-        const exportBtn = document.getElementById('export-btn');
-        const statsBtn = document.getElementById('stats-btn');
-        const helpBtn = document.getElementById('help-btn');
-        const aboutBtn = document.getElementById('about-btn');
-        const reviewWrongBtn = document.getElementById('review-wrong-btn');
-        const resetStatsBtn = document.getElementById('reset-stats-btn');
-        const loadingOverlay = document.getElementById('loading-overlay');
-        
-        // 模式選擇按鈕
-        const modeBtns = document.querySelectorAll('.mode-btn');
-        
-        // 模態框
-        const resultModal = new bootstrap.Modal(document.getElementById('result-modal'));
-        const statsModal = new bootstrap.Modal(document.getElementById('stats-modal'));
-        const helpModal = new bootstrap.Modal(document.getElementById('help-modal'));
-        const aboutModal = new bootstrap.Modal(document.getElementById('about-modal'));
-        
-        // 應用狀態
-        let state = {
-            questions: [],
-            currentQuestionIndex: 0,
-            userAnswers: {},
-            score: 0,
-            wrongQuestions: [],
-            mode: 'practice',
-            explanationMode: 'database',
-            timerRunning: false,
-            startTime: null,
-            timerId: null,
-            examDuration: 90, // 考試時長，單位：分鐘
-            explanationMode: 'database',
-            selectedAIModel: 'gpt-4o', // 預設模型
-            userData: loadUserData()
+        // 題庫資料
+        const quizData = {
+            'financial-market': [
+                {
+                    question: "當沖交易可分為哪兩類？",
+                    options: [
+                        "現股當沖與資券當沖",
+                        "融資當沖與融券當沖",
+                        "現金當沖與借券當沖",
+                        "短線當沖與長線當沖"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "當沖可分為兩類：1.現股當沖：在當天利用現金買進、賣出同一檔股票。2.資券當沖：在當天利用融資買進、融券賣出同一檔股票。",
+                    topic: "當沖交易",
+                    subtopic: "交易分類"
+                },
+                {
+                    question: "現券賣出後未完成反向沖銷時，應如何處理？",
+                    options: [
+                        "自動取消交易",
+                        "更改交易類別為融券/借券賣出，相關費用由投資人負擔",
+                        "延後至隔日執行",
+                        "系統自動補足資金"
+                    ],
+                    correct_answer_letter: "B",
+                    correct_answer_index: 1,
+                    explanation: "現券賣出成交後，未完成反向買進，致無法完成當日沖銷交易，可更改交易類別為融券/借券賣出，所發生之當日手續費及各項其他費用，均應由投資人負擔。",
+                    topic: "當沖交易",
+                    subtopic: "風險處理"
+                },
+                {
+                    question: "證金公司應付證券不夠借出的窘境，有哪三種方法？",
+                    options: [
+                        "標借、議借、標購",
+                        "融資、融券、借券",
+                        "買進、賣出、持有",
+                        "現金、融資、借券"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "證金公司有三種方法：1.標借：公開向大眾借股票，出借費率不超過收盤價格16%。2.議借：洽特定人借股票，單價不超過申請日開盤競價基準16%。3.標購：向投資大眾買股票，標購底價以前一營業日收盤價格+15%為限。",
+                    topic: "證券借券",
+                    subtopic: "證金公司業務"
+                },
+                {
+                    question: "展望理論的兩個重點是什麼？",
+                    options: [
+                        "絕對財富與相對財富",
+                        "人的效用取決於相對財富，且人類在獲利時怕風險，賠錢時喜歡冒險",
+                        "風險偏好與風險中立",
+                        "預期報酬與實際報酬"
+                    ],
+                    correct_answer_letter: "B",
+                    correct_answer_index: 1,
+                    explanation: "展望理論有兩個重點：1.人的效用取決於相對財富而非絕對財富。例如市場平均賺了10%，你只賺了5%，即使你是賺錢，你是不快樂的。2.人類在相對獲利時是怕風險的，但是在相對賠錢時是喜歡冒險的。",
+                    topic: "行為財務學",
+                    subtopic: "展望理論"
+                },
+                {
+                    question: "什麼是最大笨蛋理論？",
+                    options: [
+                        "投資者完全不管真實價值，預期會有更大的笨蛋出更高價格買走",
+                        "投資者總是做出錯誤決策",
+                        "市場上最笨的投資者會影響價格",
+                        "投資者應該避免成為最後一個買家"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "最大笨蛋理論強調投資時你完全不管某樣東西的真實價值，即使他一文不值你也願意高價買下，是因為你預期會有一個更大的笨蛋會出更高價格買走。",
+                    topic: "行為財務學",
+                    subtopic: "投資心理"
+                },
+                {
+                    question: "造成過度自信的三種錯誤認知是？",
+                    options: [
+                        "控制幻覺、自我歸因、選擇性偏差",
+                        "貪婪、恐懼、僥倖",
+                        "樂觀、悲觀、中性",
+                        "理性、感性、直覺"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "過度自信指的是人們高估自己的知識、能力，或對於自己控制事情、解讀資訊的能力過度樂觀。三種錯誤認知造成了過度自信：1.控制幻覺、2.自我歸因、3.選擇性偏差。",
+                    topic: "行為財務學",
+                    subtopic: "認知偏誤"
+                },
+                {
+                    question: "什麼是私房錢效應？",
+                    options: [
+                        "投資者隱藏投資收益",
+                        "上次買股票賺錢，投資者會更有意願投資這檔股票，甚至加碼更多",
+                        "投資者將獲利資金另外存放",
+                        "投資者只用閒置資金投資"
+                    ],
+                    correct_answer_letter: "B",
+                    correct_answer_index: 1,
+                    explanation: "如果上次買一檔股票賺錢，投資者會更有意願投資這檔股票，甚至加碼更多，財務學家稱之為「私房錢效應」。投資者在股市嚐到甜頭，由於私房錢效應的影響，會更熱衷於股票，而忽略股票上漲的風險。",
+                    topic: "行為財務學",
+                    subtopic: "投資行為"
+                },
+                {
+                    question: "開放型基金與封閉型基金在交易價格決定上的差異是？",
+                    options: [
+                        "開放型依淨值，封閉型依集中市場供需",
+                        "開放型依市場價格，封閉型依淨值",
+                        "兩者都依淨值決定",
+                        "兩者都依市場供需決定"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "開放型基金的交易價格依淨值決定，封閉型基金的交易價格依集中市場的供需決定。",
+                    topic: "基金投資",
+                    subtopic: "基金類型"
+                },
+                {
+                    question: "ETF追蹤指數的三種方式是？",
+                    options: [
+                        "完全複製法、最佳化複製法、合成複製法",
+                        "直接複製法、間接複製法、混合複製法",
+                        "主動複製法、被動複製法、平衡複製法",
+                        "現金複製法、實物複製法、衍生複製法"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "ETF追蹤指數方式有三種：1.完全複製法、2.最佳化複製法、3.合成複製法。",
+                    topic: "ETF投資",
+                    subtopic: "追蹤方式"
+                },
+                {
+                    question: "ETF商品的特色不包括？",
+                    options: [
+                        "被動式管理，追求指數報酬率",
+                        "獨特之實物申購/買回機制",
+                        "主動式管理，追求超額報酬",
+                        "兼具股票與指數基金特色"
+                    ],
+                    correct_answer_letter: "C",
+                    correct_answer_index: 2,
+                    explanation: "ETF商品特色：1.被動式管理，追求指數報酬率；2.獨特之實物申購/買回機制，使其市價貼近淨值；3.兼具股票與指數基金特色之商品。",
+                    topic: "ETF投資",
+                    subtopic: "產品特色"
+                },
+                {
+                    question: "債券市場的功能不包括？",
+                    options: [
+                        "融資功能",
+                        "引導資金流動功能",
+                        "股票價格發現功能",
+                        "政府財政政策與貨幣政策主要工具"
+                    ],
+                    correct_answer_letter: "C",
+                    correct_answer_index: 2,
+                    explanation: "債券市場有三大功能：1.融資功能、2.引導資金流動功能、3.政府財政政策與貨幣政策主要工具。",
+                    topic: "債券投資",
+                    subtopic: "市場功能"
+                },
+                {
+                    question: "投資債券的風險中，哪一項不包括在內？",
+                    options: [
+                        "利率風險",
+                        "信用風險",
+                        "股權稀釋風險",
+                        "通貨膨脹風險"
+                    ],
+                    correct_answer_letter: "C",
+                    correct_answer_index: 2,
+                    explanation: "投資債券的風險包括：1.利率風險、2.再投資風險、3.信用風險、4.流動性風險、5.通貨膨脹風險、6.贖回風險、7.匯率風險、8.波動度風險、9.風險未知風險。",
+                    topic: "債券投資",
+                    subtopic: "投資風險"
+                },
+                {
+                    question: "發行抗通膨債券的功能不包括？",
+                    options: [
+                        "讓投資者沒有通貨膨脹風險",
+                        "傳遞政府欲控制通貨膨脹的訊息",
+                        "提高政府籌資成本",
+                        "其利率較低，方便政府籌措資金"
+                    ],
+                    correct_answer_letter: "C",
+                    correct_answer_index: 2,
+                    explanation: "發行抗通膨債券的功能：1.抗通膨國庫債券讓投資者真正做到沒有通貨膨脹風險；2.傳遞政府欲控制通貨膨脹，穩定市場的訊息；3.發行抗通膨國庫債券，其利率較低，方便政府籌措資金。",
+                    topic: "債券投資",
+                    subtopic: "特殊債券"
+                },
+                {
+                    question: "期貨的三項功能是？",
+                    options: [
+                        "投機、避險、價格發現",
+                        "套利、對沖、投資",
+                        "買賣、持有、交割",
+                        "融資、融券、借貸"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "期貨有三項功能：1.投機的功能、2.避險的功能、3.價格發現(Price Discovery)。",
+                    topic: "期貨投資",
+                    subtopic: "市場功能"
+                },
+                {
+                    question: "金融期貨不包括哪一類？",
+                    options: [
+                        "外匯期貨",
+                        "利率期貨",
+                        "農產品期貨",
+                        "股價指數期貨"
+                    ],
+                    correct_answer_letter: "C",
+                    correct_answer_index: 2,
+                    explanation: "期貨按標的物性質分為兩大類：一、商品期貨：農產品期貨、金屬期貨、能源期貨、其他商品期貨；二、金融期貨：外匯期貨、利率期貨、股價指數期貨。",
+                    topic: "期貨投資",
+                    subtopic: "商品分類"
+                }
+            ],
+            'financial-analysis': [
+                {
+                    question: "資產負債表的百分比化分析通常以什麼做為轉換基礎？",
+                    options: [
+                        "營業收入淨額",
+                        "資產總額",
+                        "權益總額",
+                        "負債總額"
+                    ],
+                    correct_answer_letter: "B",
+                    correct_answer_index: 1,
+                    explanation: "資產負債表的百分比化分析：資產負債表通常以資產總額做為百分比化的轉換基礎，計算每一個項目佔資產的比重。",
+                    topic: "財務分析基礎",
+                    subtopic: "共同基準分析"
+                },
+                {
+                    question: "綜合損益表的百分比化分析通常以什麼做為轉換基礎？",
+                    options: [
+                        "資產總額",
+                        "營業收入淨額",
+                        "營業利益",
+                        "本期淨利"
+                    ],
+                    correct_answer_letter: "B",
+                    correct_answer_index: 1,
+                    explanation: "綜合損益表的百分比化分析：綜合損益表則以營業收入淨額做為百分比化的轉換基礎，計算每一個項目占營業收入的比重。",
+                    topic: "財務分析基礎",
+                    subtopic: "共同基準分析"
+                },
+                {
+                    question: "根據題目資料，A企業的負債比率為？(資產總額$776,000，負債總額$313,000)",
+                    options: [
+                        "40.34%",
+                        "59.66%",
+                        "67.60%",
+                        "158.04%"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "負債比率 = 負債總額 ÷ 資產總額 × 100% = $313,000 ÷ $776,000 × 100% = 40.34%",
+                    topic: "財務比率分析",
+                    subtopic: "償債能力分析"
+                },
+                {
+                    question: "速動資產的定義是什麼？",
+                    options: [
+                        "能夠快速轉換現金的資產",
+                        "流動性最高的資產",
+                        "在企業資產中能夠快速轉換現金或現金等價物的部分",
+                        "一年內到期的資產"
+                    ],
+                    correct_answer_letter: "C",
+                    correct_answer_index: 2,
+                    explanation: "速動資產是指在企業資產中能夠快速轉換現金或現金等價物的部分，通常在短期內即可變現。速動資產包括：1.現金及約當現金、2.短期投資、3.應收帳款。",
+                    topic: "財務比率分析",
+                    subtopic: "流動性分析"
+                },
+                {
+                    question: "間接法編制營業活動現金流量的特點是？",
+                    options: [
+                        "逐一調整各項目為現金基礎",
+                        "以權責基礎的綜合損益表為基礎，透過調整方式完成",
+                        "提供各項營業活動的現金流入流出總量",
+                        "方法相對複雜"
+                    ],
+                    correct_answer_letter: "B",
+                    correct_answer_index: 1,
+                    explanation: "間接法特點：1.以權責基礎編制的綜合損益表為基礎，透過調整方式排除應收與預付的項目金額，完成以現金為基礎的現金流量表營業活動；2.資料取得方便，編制成本較低；3.無法從報表中了解營業活動個別項目對現金流量的影響。",
+                    topic: "現金流量分析",
+                    subtopic: "編制方法"
+                },
+                {
+                    question: "下列哪一項屬於營業活動的現金流出？",
+                    options: [
+                        "出售無形資產",
+                        "發行公司債",
+                        "進貨付現",
+                        "現金增資"
+                    ],
+                    correct_answer_letter: "C",
+                    correct_answer_index: 2,
+                    explanation: "營業活動現金流出包括：進貨付現、應付款項付現、薪資付現等。營業活動現金流入包括：現金銷貨、應收款項收現等。",
+                    topic: "現金流量分析",
+                    subtopic: "三大活動分類"
+                }
+            ],
+            'quality-management': [
+                {
+                    question: "PDCA循環的三個特點是？",
+                    options: [
+                        "大環帶小環、階梯式上升、科學管理與統計方法應用",
+                        "計畫、執行、檢查、改善",
+                        "持續改善、全員參與、客戶導向",
+                        "標準化、系統化、數據化"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "PDCA循環有三個特點：1.大還帶動小環的運轉體系；2.呈現階梯式往上爬升；3.科學管理與統計方法的綜合應用。",
+                    topic: "PDCA循環",
+                    subtopic: "循環特點"
+                },
+                {
+                    question: "5M1E中的5M是指？",
+                    options: [
+                        "人員、機器、物料、方法、測量",
+                        "管理、市場、金錢、機器、人員",
+                        "方法、材料、機器、人力、管理",
+                        "目標、方法、手段、衡量、管理"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "5M1E中的5M指：Man人員、Machine機器、Material物料、Method方法、Measurement測量；1E指Environment環境。",
+                    topic: "品質管理工具",
+                    subtopic: "5M1E"
+                },
+                {
+                    question: "8Disciplines(8Ds)的第一個步驟是？",
+                    options: [
+                        "定義問題",
+                        "採取改善團隊模式",
+                        "實施暫時對策",
+                        "訂定根本原因"
+                    ],
+                    correct_answer_letter: "B",
+                    correct_answer_index: 1,
+                    explanation: "8Ds的步驟：1.採取改善團隊模式、2.定義問題、3.實施及確認暫時對策、4.訂定及確認根本原因、5.確認矯正對策、6.實施永久性矯正對策、7.防止問題再發生、8.恭喜改善團隊。",
+                    topic: "問題解決工具",
+                    subtopic: "8Disciplines"
+                },
+                {
+                    question: "標竿學習制度的發展程序可歸納為幾期？",
+                    options: [
+                        "兩期",
+                        "三期",
+                        "四期",
+                        "五期"
+                    ],
+                    correct_answer_letter: "B",
+                    correct_answer_index: 1,
+                    explanation: "標竿學習制度的發展程序可歸納為三期：預備期、實際執行期、執行後修正期，共14個步驟。",
+                    topic: "標竿學習",
+                    subtopic: "發展程序"
+                },
+                {
+                    question: "流程需要改善的因素不包括？",
+                    options: [
+                        "投入不當增加或缺乏效率",
+                        "產出不如預期",
+                        "員工滿意度提升",
+                        "作業時間過長或重複現象"
+                    ],
+                    correct_answer_letter: "C",
+                    correct_answer_index: 2,
+                    explanation: "流程需要改善通常肇因於：1.投入不當增加或缺乏效率、2.需求不明確、3.產出不如預期、4.處理程序缺乏效率或不合適、5.資訊傳遞層面效率或安全問題、6.技術工具方法更換、7.衡量方式不當、8.作業時間過長或重複現象、9.引進新的作業方式。",
+                    topic: "流程改善",
+                    subtopic: "改善因素"
+                },
+                {
+                    question: "品管七大手法不包括？",
+                    options: [
+                        "特性要因圖",
+                        "柏拉圖",
+                        "甘特圖",
+                        "管制圖"
+                    ],
+                    correct_answer_letter: "C",
+                    correct_answer_index: 2,
+                    explanation: "QC七手法包含：1.特性要因圖、2.層別法、3.查檢表、4.柏拉圖、5.直方圖、6.散布圖、7.管制圖。",
+                    topic: "品質管理工具",
+                    subtopic: "QC七手法"
+                },
+                {
+                    question: "品管圈活動實施計畫書的主要活動項目有幾個？",
+                    options: [
+                        "6個",
+                        "7個",
+                        "8個",
+                        "9個"
+                    ],
+                    correct_answer_letter: "B",
+                    correct_answer_index: 1,
+                    explanation: "品管圈活動實施計畫書包含7個活動項目：1.主題選定、2.現狀把握與目標設定、3.活動計畫之擬定、4.要因分析、5.對策擬定與實施、6.效果確認、7.標準化與維持管理。",
+                    topic: "品管圈",
+                    subtopic: "活動計畫"
+                },
+                {
+                    question: "推行全面品質管理需具備的基本觀念不包括？",
+                    options: [
+                        "高階主管的允諾、組織性支持",
+                        "堅定內外部顧客導向",
+                        "降低成本為首要目標",
+                        "持續改善企業與生產流程"
+                    ],
+                    correct_answer_letter: "C",
+                    correct_answer_index: 2,
+                    explanation: "推行全面品質管理需具備六個基本觀念：1.高階主管的允諾、組織性支持、2.堅定內外部顧客導向、3.有效運用全員工作力、4.持續改善企業與生產流程、5.視供應商為夥伴、6.建立績效衡量指標。",
+                    topic: "全面品質管理",
+                    subtopic: "基本觀念"
+                },
+                {
+                    question: "DMAIC模式的5個步驟依序為？",
+                    options: [
+                        "定義、衡量、分析、改善、控制",
+                        "計畫、執行、檢查、行動、改善",
+                        "問題、原因、對策、實施、檢討",
+                        "目標、方法、執行、評估、改善"
+                    ],
+                    correct_answer_letter: "A",
+                    correct_answer_index: 0,
+                    explanation: "DMAIC模式有5個步驟：1.定義(Define)：清楚定義問題、2.衡量(Measure)：檢視內部流程、3.分析(Analyze)：要因分析、4.改善(Improve)：降低缺失、5.控制(Control)：維持穩定。",
+                    topic: "六標準差",
+                    subtopic: "DMAIC模式"
+                }
+            ]
         };
-        
-        // 初始化
-        function init() {
-            attachEventListeners();
-            updateTimerDisplay('--:--');
-            
-            // 檢查是否有錯題，如果沒有則禁用錯題模式
-            if (!hasWrongQuestions()) {
-                document.getElementById('wrong-btn').disabled = true;
-                document.getElementById('wrong-btn').title = '尚無錯題記錄';
-            }
-        }
-        
-        // 附加事件監聽器
-        function attachEventListeners() {
-            startBtn.addEventListener('click', startQuiz);
-            prevBtn.addEventListener('click', prevQuestion);
-            submitBtn.addEventListener('click', submitAnswer);
-            nextBtn.addEventListener('click', nextQuestion);
-            saveBtn.addEventListener('click', () => saveUserData(true));
-            exportBtn.addEventListener('click', exportWrongQuestions);
-            statsBtn.addEventListener('click', showStatistics);
-            helpBtn.addEventListener('click', () => helpModal.show());
-            aboutBtn.addEventListener('click', () => aboutModal.show());
-            reviewWrongBtn.addEventListener('click', reviewWrongQuestions);
-            resetStatsBtn.addEventListener('click', resetProgress);
-            
-            // 模式選擇
-            modeBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    modeBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    state.mode = btn.dataset.mode;
-                });
-            });
-            
-            // 解析模式選擇
- document.querySelectorAll('[name="explanation-mode"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            state.explanationMode = e.target.value;
-            const aiModelSelect = document.getElementById('ai-model-select');
-            if (state.explanationMode === 'ai') {
-                aiModelSelect.classList.remove('d-none');
-            } else {
-                aiModelSelect.classList.add('d-none');
-            }
-        });
-    });
 
-// AI模型選擇
-document.getElementById('ai-model').addEventListener('change', (e) => {
-    state.selectedAIModel = e.target.value; // 保存當前選擇的模型
-});
+        // 題庫資訊
+        const databaseInfo = {
+            'financial-market': {
+                name: '金融市場實務',
+                icon: 'fas fa-chart-line',
+                color: '#ffd700',
+                count: 15,
+                description: '金融商品與投資工具'
+            },
+            'financial-analysis': {
+                name: '財務報表分析',
+                icon: 'fas fa-calculator',
+                color: '#28a745',
+                count: 6,
+                description: '財務比率與現金流量'
+            },
+            'quality-management': {
+                name: '品質管理',
+                icon: 'fas fa-cogs',
+                color: '#17a2b8',
+                count: 9,
+                description: 'PDCA與品質管理工具'
+            }
+        };
 
-// 頁面關閉前自動保存
-window.addEventListener('beforeunload', () => saveUserData(false));
-}
-        
-        // 載入使用者數據
-        function loadUserData() {
-            try {
-                const data = localStorage.getItem('quizUserData');
-                return data ? JSON.parse(data) : {
-                    correct: [],
-                    incorrect: [],
-                    history: []
-                };
-            } catch (error) {
-                console.error('載入使用者數據錯誤:', error);
-                return {
-                    correct: [],
-                    incorrect: [],
-                    history: []
-                };
-            }
-        }
-        
-        // 保存使用者數據
-        function saveUserData(showMessage = false) {
-            try {
-                localStorage.setItem('quizUserData', JSON.stringify(state.userData));
-                if (showMessage) {
-                    alert('學習數據已儲存');
+        // 全域狀態管理
+        const ExamApp = {
+            state: {
+                isQuizActive: false,
+                selectedDatabase: null,
+                currentMode: 'practice',
+                selectedReviewMode: null,
+                questions: [],
+                currentQuestionIndex: 0,
+                userAnswers: {},
+                score: 0,
+                wrongQuestions: [],
+                startTime: null,
+                isTimerRunning: false,
+                examDuration: 60,
+                timerId: null,
+                userData: null
+            },
+            
+            elements: {
+                databaseSelector: document.getElementById('database-selector'),
+                databaseCards: document.querySelectorAll('.database-card'),
+                settingsPanel: document.getElementById('settings-panel'),
+                quizContainer: document.getElementById('quiz-container'),
+                startBtn: document.getElementById('start-btn'),
+                reviewBtnMain: document.getElementById('review-btn-main'),
+                reviewModesSection: document.getElementById('review-modes-section'),
+                backBtn: document.getElementById('back-to-selection'),
+                prevBtn: document.getElementById('prev-btn'),
+                submitBtn: document.getElementById('submit-btn'),
+                nextBtn: document.getElementById('next-btn'),
+                finishBtn: document.getElementById('finish-btn'),
+                explanationBtn: document.getElementById('explanation-btn'),
+                quizStatus: document.getElementById('quiz-status'),
+                timerElement: document.getElementById('timer'),
+                questionNumber: document.getElementById('question-number'),
+                questionText: document.getElementById('question-text'),
+                optionsContainer: document.getElementById('options-container'),
+                explanationBox: document.getElementById('explanation-box'),
+                explanationContent: document.getElementById('explanation-content'),
+                progressBar: document.getElementById('progress-bar'),
+                statsDisplay: document.getElementById('stats-display'),
+                topicBadge: document.getElementById('topic-badge'),
+                subtopicBadge: document.getElementById('subtopic-badge'),
+                loadingOverlay: document.getElementById('loading-overlay'),
+                loadingText: document.getElementById('loading-text'),
+                questionCountSelect: document.getElementById('question-count'),
+                questionCountHint: document.getElementById('question-count-hint')
+            },
+            
+            modals: {
+                result: new bootstrap.Modal(document.getElementById('result-modal')),
+                stats: new bootstrap.Modal(document.getElementById('stats-modal')),
+                help: new bootstrap.Modal(document.getElementById('help-modal'))
+            },
+            
+            init() {
+                this.state.userData = this.loadUserData();
+                this.attachEventListeners();
+                this.updateReviewButtonState();
+                console.log('🚀 金融證照模擬考試系統已初始化');
+            },
+            
+            loadUserData() {
+                try {
+                    const data = localStorage.getItem('FinanceExamUserData');
+                    return data ? JSON.parse(data) : {
+                        correct: [],
+                        incorrect: [],
+                        history: [],
+                        databaseStats: {}
+                    };
+                } catch (error) {
+                    console.error('載入使用者數據錯誤:', error);
+                    return {
+                        correct: [],
+                        incorrect: [],
+                        history: [],
+                        databaseStats: {}
+                    };
                 }
-                return true;
-            } catch (error) {
-                console.error('保存使用者數據錯誤:', error);
-                if (showMessage) {
-                    alert('儲存失敗: ' + error.message);
+            },
+            
+            saveUserData(showMessage = false) {
+                try {
+                    localStorage.setItem('FinanceExamUserData', JSON.stringify(this.state.userData));
+                    if (showMessage) {
+                        this.showAlert('學習數據已儲存', 'success');
+                    }
+                    return true;
+                } catch (error) {
+                    console.error('保存使用者數據錯誤:', error);
+                    if (showMessage) {
+                        this.showAlert('儲存失敗: ' + error.message, 'error');
+                    }
+                    return false;
                 }
-                return false;
-            }
-        }
-        
-        // 檢查是否有錯題
-        function hasWrongQuestions() {
-            return state.userData.incorrect && state.userData.incorrect.length > 0;
-        }
-        
-        // 開始測驗
-        function startQuiz() {
-            const numQuestions = parseInt(document.getElementById('question-count').value);
+            },
             
-            // 顯示加載動畫
-            loadingOverlay.classList.remove('d-none');
-            
-            // 重置測驗狀態
-            state.currentQuestionIndex = 0;
-            state.userAnswers = {};
-            state.score = 0;
-            state.wrongQuestions = [];
-            
-            // 異步加載題目以便顯示加載動畫
-            setTimeout(() => {
-                // 加載題目
-                if (loadQuestions(numQuestions)) {
-                    // 顯示問題區域
-                    quizContainer.classList.remove('d-none');
-                    
-                    // 顯示第一題
-                    displayQuestion();
-                    
-                    // 更新按鈕狀態
-                    submitBtn.disabled = false;
-                    nextBtn.disabled = true;
-                    prevBtn.disabled = true;
-                    
-                    // 如果是考試模式，啟動計時器
-                    if (state.mode === 'exam') {
-                        startTimer();
-                        if (numQuestions < 80) {
-                            alert('建議模擬考試選擇80題！');
+            attachEventListeners() {
+                // 題庫選擇
+                this.elements.databaseCards.forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (this.state.isQuizActive) {
+                            this.showAlert('測驗進行中，無法切換題庫！', 'warning');
+                            return;
                         }
+                        this.selectDatabase(card.dataset.type);
+                    });
+                });
+                
+                // 按鈕事件
+                this.elements.startBtn.addEventListener('click', () => this.startQuiz());
+                this.elements.reviewBtnMain.addEventListener('click', () => this.startReview());
+                this.elements.backBtn.addEventListener('click', () => this.backToSelection());
+                this.elements.prevBtn.addEventListener('click', () => this.prevQuestion());
+                this.elements.submitBtn.addEventListener('click', () => this.submitAnswer());
+                this.elements.nextBtn.addEventListener('click', () => this.nextQuestion());
+                this.elements.finishBtn.addEventListener('click', () => this.finishQuiz());
+                this.elements.explanationBtn.addEventListener('click', () => this.showCurrentExplanation());
+                
+                // 複習模式選擇事件
+                document.querySelectorAll('.review-mode-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        if (this.state.isQuizActive) {
+                            this.showAlert('測驗進行中，無法更改複習模式！', 'warning');
+                            return;
+                        }
+                        this.selectReviewMode(item.dataset.reviewMode);
+                    });
+                });
+                
+                // 導航按鈕
+                document.getElementById('save-btn').addEventListener('click', () => this.saveUserData(true));
+                document.getElementById('export-btn').addEventListener('click', () => this.exportWrongQuestions());
+                document.getElementById('stats-btn').addEventListener('click', () => this.showStatistics());
+                document.getElementById('help-btn').addEventListener('click', () => this.modals.help.show());
+                
+                // 模式選擇
+                document.querySelectorAll('.mode-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (this.state.isQuizActive) {
+                            this.showAlert('測驗進行中，無法更改模式！', 'warning');
+                            return;
+                        }
+                        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.state.currentMode = btn.dataset.mode;
+                        this.updateModeUI();
+                    });
+                });
+                
+                // 模態框按鈕
+                document.getElementById('review-wrong-btn').addEventListener('click', () => this.reviewWrongQuestions());
+                document.getElementById('reset-stats-btn').addEventListener('click', () => this.resetProgress());
+                
+                // 頁面關閉前自動保存
+                window.addEventListener('beforeunload', () => this.saveUserData(false));
+            },
+            
+            selectDatabase(type) {
+                this.elements.databaseCards.forEach(card => card.classList.remove('selected'));
+                
+                const selectedCard = document.querySelector(`[data-type="${type}"]`);
+                selectedCard.classList.add('selected');
+                
+                this.state.selectedDatabase = type;
+                this.updateDatabaseUI(type);
+                this.elements.startBtn.disabled = false;
+                this.updateReviewButtonState();
+                this.updateQuestionCountOptions(type);
+                
+                console.log(`✅ 已選擇題庫: ${type}`);
+            },
+            
+            updateQuestionCountOptions(type) {
+                const totalQuestions = databaseInfo[type].count;
+                const select = this.elements.questionCountSelect;
+                const hint = this.elements.questionCountHint;
+                
+                // 清空選項
+                select.innerHTML = '';
+                
+                // 添加全部題目選項
+                const allOption = document.createElement('option');
+                allOption.value = 'all';
+                allOption.textContent = `全部題目 (${totalQuestions}題)`;
+                allOption.selected = true;
+                select.appendChild(allOption);
+                
+                // 添加部分題目選項
+                if (totalQuestions >= 5) {
+                    const partialOption = document.createElement('option');
+                    partialOption.value = '5';
+                    partialOption.textContent = '5題 - 快速練習';
+                    select.appendChild(partialOption);
+                }
+                
+                if (totalQuestions >= 10) {
+                    const partialOption = document.createElement('option');
+                    partialOption.value = '10';
+                    partialOption.textContent = '10題 - 標準練習';
+                    select.appendChild(partialOption);
+                }
+                
+                // 更新提示
+                hint.textContent = `${databaseInfo[type].name} 共 ${totalQuestions} 題`;
+            },
+            
+            updateDatabaseUI(type) {
+                const databaseNames = {
+                    'financial-market': '金融市場實務',
+                    'financial-analysis': '財務報表分析',
+                    'quality-management': '品質管理'
+                };
+                
+                const selectedName = databaseNames[type] || type;
+                this.elements.timerElement.innerHTML = `<i class="fas fa-clock me-2"></i>已選擇：${selectedName}`;
+            },
+            
+            selectReviewMode(mode) {
+                document.querySelectorAll('.review-mode-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                const selectedItem = document.querySelector(`[data-review-mode="${mode}"]`);
+                if (selectedItem) {
+                    selectedItem.classList.add('selected');
+                    this.state.selectedReviewMode = mode;
+                    this.updateReviewButtonState();
+                    console.log(`✅ 已選擇複習模式: ${mode}`);
+                }
+            },
+            
+            updateModeUI() {
+                // 根據模式顯示/隱藏複習選項
+                if (this.state.currentMode === 'practice' || this.state.currentMode === 'exam') {
+                    this.elements.reviewModesSection.classList.add('d-none');
+                    this.elements.startBtn.classList.remove('d-none');
+                    this.elements.reviewBtnMain.classList.add('d-none');
+                }
+            },
+            
+            updateReviewButtonState() {
+                const hasWrongQuestions = this.state.userData.incorrect && this.state.userData.incorrect.length > 0;
+                const hasSelectedDatabase = this.state.selectedDatabase !== null;
+                
+                if (hasSelectedDatabase) {
+                    this.elements.reviewModesSection.classList.remove('d-none');
+                    this.elements.reviewBtnMain.classList.remove('d-none');
+                } else {
+                    this.elements.reviewModesSection.classList.add('d-none');
+                    this.elements.reviewBtnMain.classList.add('d-none');
+                }
+                
+                // 更新錯題複習選項的可用狀態
+                const wrongModeItem = document.querySelector('[data-review-mode="wrong"]');
+                if (wrongModeItem) {
+                    if (hasWrongQuestions) {
+                        wrongModeItem.style.opacity = '1';
+                        wrongModeItem.style.pointerEvents = 'auto';
+                        wrongModeItem.title = '複習之前答錯的題目';
                     } else {
-                        // 非考試模式，重置計時器顯示
-                        updateTimerDisplay('--:--');
+                        wrongModeItem.style.opacity = '0.5';
+                        wrongModeItem.style.pointerEvents = 'none';
+                        wrongModeItem.title = '尚無錯題記錄';
+                    }
+                }
+                
+                this.elements.reviewBtnMain.disabled = !hasSelectedDatabase;
+            },
+            
+            startQuiz() {
+                if (!this.state.selectedDatabase) {
+                    this.showAlert('請先選擇科目！', 'warning');
+                    return;
+                }
+                
+                this.showLoading('準備測驗中...');
+                
+                this.state.isQuizActive = true;
+                this.lockInterface();
+                
+                const questionCountValue = this.elements.questionCountSelect.value;
+                const questionCount = questionCountValue === 'all' ? 
+                    databaseInfo[this.state.selectedDatabase].count : 
+                    parseInt(questionCountValue);
+                
+                setTimeout(() => {
+                    if (this.loadQuestions(questionCount)) {
+                        this.state.currentQuestionIndex = 0;
+                        this.state.userAnswers = {};
+                        this.state.score = 0;
+                        this.state.wrongQuestions = [];
+                        this.state.startTime = new Date();
+                        
+                        this.elements.settingsPanel.classList.add('d-none');
+                        this.elements.quizContainer.classList.remove('d-none');
+                        this.elements.quizStatus.style.display = 'block';
+                        this.elements.quizStatus.classList.add('active');
+                        
+                        this.displayQuestion();
+                        
+                        if (this.state.currentMode === 'exam') {
+                            this.startTimer();
+                        }
+                        
+                        this.hideLoading();
+                        console.log('✅ 測驗已開始');
+                    } else {
+                        this.hideLoading();
+                        this.state.isQuizActive = false;
+                        this.unlockInterface();
+                    }
+                }, 500);
+            },
+            
+            startReview() {
+                if (!this.state.selectedDatabase) {
+                    this.showAlert('請先選擇科目！', 'warning');
+                    return;
+                }
+                
+                if (!this.state.selectedReviewMode) {
+                    this.showAlert('請選擇複習模式！', 'warning');
+                    return;
+                }
+                
+                this.showLoading('準備複習模式...');
+                
+                this.state.isQuizActive = true;
+                this.state.currentMode = 'review';
+                this.lockInterface();
+                
+                setTimeout(() => {
+                    if (this.loadReviewQuestions()) {
+                        this.state.currentQuestionIndex = 0;
+                        this.state.userAnswers = {};
+                        this.state.score = 0;
+                        this.state.wrongQuestions = [];
+                        this.state.startTime = new Date();
+                        
+                        this.elements.settingsPanel.classList.add('d-none');
+                        this.elements.quizContainer.classList.remove('d-none');
+                        this.elements.quizStatus.style.display = 'block';
+                        this.elements.quizStatus.classList.add('active');
+                        this.elements.quizStatus.innerHTML = '<i class="fas fa-redo me-1"></i>複習進行中';
+                        
+                        this.displayQuestion();
+                        
+                        this.hideLoading();
+                        console.log('✅ 複習已開始');
+                    } else {
+                        this.hideLoading();
+                        this.state.isQuizActive = false;
+                        this.unlockInterface();
+                    }
+                }, 500);
+            },
+            
+            loadQuestions(count) {
+                const currentQuizData = quizData[this.state.selectedDatabase];
+                
+                if (!currentQuizData || currentQuizData.length === 0) {
+                    this.showAlert(`${databaseInfo[this.state.selectedDatabase].name}題庫為空！`, 'error');
+                    return false;
+                }
+                
+                // 隨機排序題目
+                const shuffledQuestions = [...currentQuizData].sort(() => Math.random() - 0.5);
+                
+                // 挑選指定數量題目
+                this.state.questions = shuffledQuestions.slice(0, Math.min(count, shuffledQuestions.length));
+                
+                // 重新編號題目
+                this.state.questions.forEach((q, index) => q.number = index + 1);
+                
+                return true;
+            },
+            
+            loadReviewQuestions() {
+                const currentQuizData = quizData[this.state.selectedDatabase];
+                
+                if (!currentQuizData || currentQuizData.length === 0) {
+                    this.showAlert(`${databaseInfo[this.state.selectedDatabase].name}題庫為空！`, 'error');
+                    return false;
+                }
+                
+                let questionsToReview = [];
+                
+                switch (this.state.selectedReviewMode) {
+                    case 'wrong':
+                        const incorrectQuestions = this.state.userData.incorrect || [];
+                        questionsToReview = currentQuizData.filter(q => 
+                            incorrectQuestions.includes(q.question)
+                        );
+                        if (questionsToReview.length === 0) {
+                            this.showAlert('目前沒有錯題記錄，請先進行練習！', 'info');
+                            return false;
+                        }
+                        break;
+                        
+                    case 'all':
+                        questionsToReview = [...currentQuizData];
+                        break;
+                        
+                    default:
+                        this.showAlert('未知的複習模式！', 'error');
+                        return false;
+                }
+                
+                this.state.questions = questionsToReview;
+                this.state.questions.forEach((q, index) => q.number = index + 1);
+                
+                return true;
+            },
+            
+            lockInterface() {
+                this.elements.databaseSelector.classList.add('disabled');
+                this.elements.settingsPanel.classList.add('disabled');
+                this.elements.databaseCards.forEach(card => card.classList.add('disabled'));
+            },
+            
+            unlockInterface() {
+                this.elements.databaseSelector.classList.remove('disabled');
+                this.elements.settingsPanel.classList.remove('disabled');
+                this.elements.databaseCards.forEach(card => card.classList.remove('disabled'));
+            },
+            
+            displayQuestion() {
+                if (!this.state.questions || this.state.currentQuestionIndex >= this.state.questions.length) {
+                    this.finishQuiz();
+                    return false;
+                }
+                
+                const question = this.state.questions[this.state.currentQuestionIndex];
+                
+                this.elements.questionNumber.textContent = `問題 ${question.number}/${this.state.questions.length}`;
+                this.elements.questionText.textContent = question.question;
+                
+                // 生成選項
+                this.elements.optionsContainer.innerHTML = '';
+                question.options.forEach((option, index) => {
+                    const letter = String.fromCharCode(65 + index);
+                    const optionHTML = `
+                        <div class="form-check mb-2">
+                            <input class="option-input" type="radio" name="quiz-option" id="option-${letter}" value="${letter}">
+                            <label class="option-label" for="option-${letter}">
+                                ${letter}. ${option}
+                            </label>
+                        </div>
+                    `;
+                    this.elements.optionsContainer.insertAdjacentHTML('beforeend', optionHTML);
+                });
+                
+                // 恢復之前的答案
+                if (this.state.currentQuestionIndex in this.state.userAnswers) {
+                    const previousAnswer = this.state.userAnswers[this.state.currentQuestionIndex];
+                    const answerInput = document.getElementById(`option-${previousAnswer.answer}`);
+                    if (answerInput) {
+                        answerInput.checked = true;
                     }
                     
-                    // 隱藏加載動畫
-                    loadingOverlay.classList.add('d-none');
+                    if (this.state.currentMode !== 'exam') {
+                        this.showExplanation(question, previousAnswer.answer, previousAnswer.isCorrect);
+                        document.querySelectorAll('input[name="quiz-option"]').forEach(input => {
+                            input.disabled = true;
+                        });
+                    }
                 }
-            }, 500);
-        }
-        
-// 加載題目
-function loadQuestions(numQuestions) {
-    if (!quizData || quizData.length === 0) {
-        alert('題庫尚未載入或無效！');
-        return false;
-    }
-
-    // 隨機排序題目
-    const shuffledQuestions = [...quizData].sort(() => Math.random() - 0.5);
-
-    // 挑選指定數量題目
-    state.questions = shuffledQuestions.slice(0, numQuestions);
-
-    // 重新編號題目
-    state.questions.forEach((q, index) => q.number = index + 1);
-
-    return true;
-}
-        
-        
-        // 顯示當前問題
-        function displayQuestion() {
-    if (!state.questions || state.currentQuestionIndex >= state.questions.length) {
-        finishQuiz();
-        return false;
-    }
-
-    const question = state.questions[state.currentQuestionIndex];
-
-    // 更新問題文字
-    questionNumber.textContent = `問題 ${question.number}/${state.questions.length}`;
-    questionText.textContent = question.question;
-
-    // 更新選項
-    optionsContainer.innerHTML = '';
-    for (let i = 0; i < question.options.length; i++) {
-        const option = question.options[i]; // 獲取選項物件
-        const letter = option.label; // 選項的標籤 (A, B, C, D)
-        const content = option.content; // 選項的內容
-
-        const optionDiv = document.createElement('div');
-        optionDiv.className = 'form-check mb-2';
-
-        const input = document.createElement('input');
-        input.className = 'option-input form-check-input';
-        input.type = 'radio';
-        input.name = 'quiz-option';
-        input.id = `option-${letter}`;
-        input.value = letter;
-
-        const label = document.createElement('label');
-        label.className = 'option-label';
-        label.htmlFor = `option-${letter}`;
-        label.textContent = `${letter}. ${content}`; // 顯示選項標籤和內容
-
-        optionDiv.appendChild(input);
-        optionDiv.appendChild(label);
-        optionsContainer.appendChild(optionDiv);
-
-        // 如果已經回答過這題，選中之前的選擇
-        if (state.currentQuestionIndex in state.userAnswers) {
-            if (state.userAnswers[state.currentQuestionIndex] === letter) {
-                input.checked = true;
-            }
-            // 考試模式下，不禁用選項，允許修改答案
-            if (state.mode !== 'exam') {
-                input.disabled = true;
-                submitBtn.disabled = true;
-                nextBtn.disabled = false;
-            }
-        }
-    }
-
-    // 在非考試模式下，已回答的題目顯示解析
-    if (state.mode !== 'exam' && state.currentQuestionIndex in state.userAnswers) {
-        const userAnswer = state.userAnswers[state.currentQuestionIndex];
-        const isCorrect = userAnswer === question.answer;
-        showExplanation(isCorrect);
-    } else {
-        // 隱藏解析區域
-        explanationBox.classList.add('d-none');
-    }
-
-    // 更新進度條
-    const progress = ((state.currentQuestionIndex + 1) / state.questions.length) * 100;
-    progressBar.style.width = `${progress}%`;
-
-    // 更新統計信息
-    updateStats();
-
-    // 更新上一題按鈕狀態
-    prevBtn.disabled = state.currentQuestionIndex === 0 || state.mode === 'exam';
-
-    return true;
-}
-        
-        // 提交答案
-        function submitAnswer() {
-    if (!state.questions || state.currentQuestionIndex >= state.questions.length) {
-        return false;
-    }
-
-    // 獲取用戶選擇
-    const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
-    if (!selectedOption) {
-        alert('請選擇一個答案');
-        return false;
-    }
-
-    const question = state.questions[state.currentQuestionIndex];
-    const userAnswer = selectedOption.value;
-
-    // 記錄答案
-    state.userAnswers[state.currentQuestionIndex] = userAnswer;
-
-    // 檢查是否正確
-    const isCorrect = userAnswer === question.answer; // 修改這裡，使用 `question.answer`
-
-    // 記錄歷史
-    const timestamp = new Date().toISOString();
-    const historyEntry = {
-        timestamp: timestamp,
-        question: question.question,
-        options: question.options,
-        user_answer: userAnswer,
-        correct_answer: question.answer, // 修改這裡，使用 `question.answer`
-        is_correct: isCorrect,
-        topic: question.topic,
-        subtopic: question.subtopic,
-        explanation: question.explanation
-    };
-    state.userData.history.push(historyEntry);
-
-    // 更新分數與錯題
-    if (isCorrect) {
-        state.score += 1;
-        if (!state.userData.correct.includes(question.question)) {
-            state.userData.correct.push(question.question);
-        }
-        // 如果之前答錯過，從錯題列表中移除
-        const incorrectIndex = state.userData.incorrect.indexOf(question.question);
-        if (incorrectIndex !== -1) {
-            state.userData.incorrect.splice(incorrectIndex, 1);
-        }
-    } else {
-        state.wrongQuestions.push(question);
-        if (!state.userData.incorrect.includes(question.question)) {
-            state.userData.incorrect.push(question.question);
-        }
-        // 如果之前答對過，從正確列表中移除
-        const correctIndex = state.userData.correct.indexOf(question.question);
-        if (correctIndex !== -1) {
-            state.userData.correct.splice(correctIndex, 1);
-        }
-    }
-
-    // 練習模式顯示答案解析
-    if (state.mode === 'practice' || state.mode === 'wrong') {
-        showExplanation(isCorrect);
-    } else {
-        // 考試模式不顯示解析
-        explanationBox.classList.remove('d-none');
-        explanationContent.innerHTML = '<div class="alert alert-info">考試模式不顯示解析，完成後可查看結果。</div>';
-        topicBadge.textContent = '';
-        subtopicBadge.textContent = '';
-    }
-
-    // 更新統計
-    updateStats();
-
-    // 更新按鈕狀態
-    submitBtn.disabled = true;
-    nextBtn.disabled = false;
-
-    // 禁用選項，防止修改(考試模式除外)
-    if (state.mode !== 'exam') {
-        const options = document.querySelectorAll('input[name="quiz-option"]');
-        options.forEach(option => {
-            option.disabled = true;
-        });
-    }
-
-    // 自動儲存使用者資料
-    saveUserData(false);
-
-    return true;
-}
-        
-        // 顯示答案解析
-        function showExplanation(isCorrect) {
-    if (!state.questions || state.currentQuestionIndex >= state.questions.length) {
-        return;
-    }
-    
-    const question = state.questions[state.currentQuestionIndex];
-    
-    // 顯示解析區域
-    explanationBox.classList.remove('d-none');
-    
-    // 設置解析內容
-    let explanationHTML = '';
-    if (isCorrect) {
-        explanationHTML += '<div class="correct mb-3">✅ 答對了！</div>';
-    } else {
-        explanationHTML += `<div class="incorrect mb-3">❌ 答錯了！正確答案是: ${question.answer}</div>`;
-    }
-    
-    // 解析內容
-    explanationHTML += '<div class="fw-bold mb-2">解析:</div>';
-    if (state.explanationMode === 'database') {
-        explanationHTML += `<div class="highlight">${question.explanation || '無解析'}</div>`;
-    } else if (state.explanationMode === 'ai') {
-        explanationHTML += '<div class="highlight" id="ai-explanation">正在生成解析，請稍候...</div>';
-        generateAIExplanation(question);
-    }
-
-    explanationContent.innerHTML = explanationHTML;
-    
-    // 顯示主題標籤
-    topicBadge.textContent = question.topic || '未分類';
-    subtopicBadge.textContent = question.subtopic || '未分類';
-}
-        
-        // 調用後端API生成AI解析
-async function generateAIExplanation(question) {
-    const userAnswer = state.userAnswers[state.currentQuestionIndex];
-    const prompt = `
-        你是一個專業的生成式AI認證考試輔導老師。請以150個字以內，用繁體中文根據以下題目生成詳細的答案解析：
-        選項: 
-        ${question.options.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt}`).join('\n')}
-        正確答案: ${question.correct_answer_letter}
-        請提供清晰的解釋，說明為什麼正確答案是正確的，以及為什麼其他選項是錯誤的。
-    `;
-
-    try {
-        // 顯示加載動畫
-        loadingOverlay.classList.remove('d-none');
-
-        const response = await fetch('http://localhost:5000/api/generate-explanation', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+                
+                // 更新進度條
+                const progress = ((this.state.currentQuestionIndex + 1) / this.state.questions.length) * 100;
+                this.elements.progressBar.style.width = `${progress}%`;
+                
+                // 更新按鈕狀態
+                this.updateButtonStates();
+                
+                // 更新統計
+                this.updateStats();
+                
+                // 隱藏解析（如果未回答）
+                if (!(this.state.currentQuestionIndex in this.state.userAnswers)) {
+                    this.elements.explanationBox.classList.add('d-none');
+                }
+                
+                return true;
             },
-            body: JSON.stringify({
-                model: state.selectedAIModel,
-                prompt: prompt,
-            }),
-        });
-
-        // 隱藏加載動畫
-        loadingOverlay.classList.add('d-none');
-
-        if (!response.ok) {
-            throw new Error(`API請求失敗，狀態碼: ${response.status}`);
-        }
-
-        const data = await response.json();
-        const aiExplanation = data.explanation || '無法生成解析，請稍後再試';
-        document.getElementById('ai-explanation').innerHTML = aiExplanation;
-    } catch (error) {
-        console.error('AI解析生成失敗:', error);
-        // 確保錯誤時也隱藏加載動畫
-        loadingOverlay.classList.add('d-none');
-        document.getElementById('ai-explanation').innerHTML = '解析生成失敗，請檢查網路或稍後再試';
-    }
-}
-
-
-
-
-
-        
-        // 前往上一題
-        function prevQuestion() {
-            if (state.currentQuestionIndex <= 0) {
-                return; // 已經是第一題
-            }
             
-            // 考試模式不允許返回上一題
-            if (state.mode === 'exam') {
-                alert('考試模式不能返回上一題！');
-                return;
-            }
-            
-            state.currentQuestionIndex -= 1;
-            displayQuestion();
-        }
-        
-        // 前往下一題
-        function nextQuestion() {
-            state.currentQuestionIndex += 1;
-            
-            // 檢查是否已完成所有題目
-            if (state.currentQuestionIndex >= state.questions.length) {
-                finishQuiz();
-                return;
-            }
-            
-            // 顯示下一題
-            displayQuestion();
-            
-            // 更新按鈕狀態
-            if (state.currentQuestionIndex in state.userAnswers) {
-                // 已回答過的題目
-                submitBtn.disabled = true;
-                nextBtn.disabled = false;
-            } else {
-                // 未回答過的題目
-                submitBtn.disabled = false;
-                nextBtn.disabled = true;
+            submitAnswer() {
+                const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
+                if (!selectedOption) {
+                    this.showAlert('請選擇一個答案！', 'warning');
+                    return false;
+                }
                 
-                // 啟用選項
-                const options = document.querySelectorAll('input[name="quiz-option"]');
-                options.forEach(option => {
-                    option.disabled = false;
-                });
+                const question = this.state.questions[this.state.currentQuestionIndex];
+                const userAnswer = selectedOption.value;
+                const isCorrect = userAnswer === question.correct_answer_letter;
                 
-                // 清空選擇
-                options.forEach(option => {
-                    option.checked = false;
-                });
-            }
+                // 記錄答案
+                this.state.userAnswers[this.state.currentQuestionIndex] = {
+                    answer: userAnswer,
+                    isCorrect: isCorrect,
+                    timestamp: new Date()
+                };
+                
+                // 更新分數
+                if (isCorrect) {
+                    this.state.score++;
+                    if (!this.state.userData.correct.includes(question.question)) {
+                        this.state.userData.correct.push(question.question);
+                    }
+                    const incorrectIndex = this.state.userData.incorrect.indexOf(question.question);
+                    if (incorrectIndex !== -1) {
+                        this.state.userData.incorrect.splice(incorrectIndex, 1);
+                    }
+                } else {
+                    this.state.wrongQuestions.push(question);
+                    if (!this.state.userData.incorrect.includes(question.question)) {
+                        this.state.userData.incorrect.push(question.question);
+                    }
+                    const correctIndex = this.state.userData.correct.indexOf(question.question);
+                    if (correctIndex !== -1) {
+                        this.state.userData.correct.splice(correctIndex, 1);
+                    }
+                }
+                
+                // 記錄歷史
+                const historyEntry = {
+                    timestamp: new Date().toISOString(),
+                    database: this.state.selectedDatabase,
+                    question: question.question,
+                    options: question.options,
+                    user_answer: userAnswer,
+                    correct_answer_letter: question.correct_answer_letter,
+                    correct_answer_index: question.correct_answer_index,
+                    is_correct: isCorrect,
+                    topic: question.topic,
+                    subtopic: question.subtopic,
+                    explanation: question.explanation
+                };
+                this.state.userData.history.push(historyEntry);
+                
+                // 顯示解析
+                if (this.state.currentMode === 'practice' || this.state.currentMode === 'review') {
+                    this.showExplanation(question, userAnswer, isCorrect);
+                    document.querySelectorAll('input[name="quiz-option"]').forEach(input => {
+                        input.disabled = true;
+                    });
+                }
+                
+                // 更新統計與按鈕狀態
+                this.updateStats();
+                this.updateButtonStates();
+                this.updateReviewButtonState();
+                
+                // 保存用戶資料
+                this.saveUserData(false);
+                
+                return true;
+            },
             
-            // 隱藏解析區域(如果未回答過)
-            if (!(state.currentQuestionIndex in state.userAnswers)) {
-                explanationBox.classList.add('d-none');
-            }
-        }
-        
-        // 更新統計信息
-        function updateStats() {
-            const answered = Object.keys(state.userAnswers).length;
-            const total = state.questions.length;
-            
-            if (total > 0) {
-                const percentage = (state.score / answered) * 100 || 0;
-                statsDisplay.textContent = `得分: ${state.score}/${answered} (${percentage.toFixed(1)}%)`;
-            } else {
-                statsDisplay.textContent = "得分: 0/0 (0%)";
-            }
-        }
-        
-        // 結束測驗
-        function finishQuiz() {
-            // 停止計時器
-            stopTimer();
-            
-            // 顯示結果
-            showResult();
-        }
-        
-        // 計時器相關函數
-        function startTimer() {
-            state.timerRunning = true;
-            state.startTime = new Date();
-            updateTimer();
-        }
-        
-        function stopTimer() {
-            state.timerRunning = false;
-            if (state.timerId) {
-                clearTimeout(state.timerId);
-                state.timerId = null;
-            }
-        }
-        
-        function updateTimer() {
-            if (!state.timerRunning) {
-                return;
-            }
-            
-            const currentTime = new Date();
-            const elapsedSeconds = Math.floor((currentTime - state.startTime) / 1000);
-            const remainingSeconds = (state.examDuration * 60) - elapsedSeconds;
-            
-            if (remainingSeconds <= 0) {
-                // 時間到
-                updateTimerDisplay('00:00');
-                timerElement.classList.add('warning');
-                stopTimer();
-                alert('時間到！考試結束。');
-                finishQuiz();
-                return;
-            }
-            
-            // 更新剩餘時間顯示
-            const minutes = Math.floor(remainingSeconds / 60);
-            const seconds = remainingSeconds % 60;
-            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            updateTimerDisplay(timeString);
-            
-            // 剩餘時間少於5分鐘時變紅色警示
-            if (minutes < 5) {
-                timerElement.classList.add('warning');
-            } else {
-                timerElement.classList.remove('warning');
-            }
-            
-            // 每秒更新一次
-            state.timerId = setTimeout(updateTimer, 1000);
-        }
-        
-        function updateTimerDisplay(timeString) {
-            timerElement.textContent = `剩餘時間: ${timeString}`;
-        }
-        
-        // 顯示測驗結果
-function showResult() {
-    const total = state.questions.length;
-    const answered = Object.keys(state.userAnswers).length;
-    const unanswered = total - answered;
-    
-    const percentage = (state.score / total) * 100 || 0;
-    
-    // 生成結果HTML (保留原有的基本結果部分)
-    let resultHTML = `
-        <div class="text-center mb-4">
-            <h3>測驗結果</h3>
-            <div class="progress my-3">
-                <div class="progress-bar bg-success" style="width: ${percentage}%">${percentage.toFixed(1)}%</div>
-            </div>
-        </div>
-        
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-4">
-                        <h4 class="text-primary">${state.score}</h4>
-                        <p>得分</p>
+            showExplanation(question, userAnswer, isCorrect) {
+                this.elements.explanationBox.classList.remove('d-none');
+                
+                const resultClass = isCorrect ? 'correct' : 'incorrect';
+                const resultIcon = isCorrect ? '✅' : '❌';
+                const resultText = isCorrect ? '答對了！' : `答錯了！正確答案是 ${question.correct_answer_letter}`;
+                
+                let explanationHTML = `
+                    <div class="${resultClass} mb-3">
+                        ${resultIcon} ${resultText}
                     </div>
-                    <div class="col-4">
-                        <h4 class="text-primary">${total}</h4>
-                        <p>總題數</p>
-                    </div>
-                    <div class="col-4">
-                        <h4 class="text-primary">${percentage.toFixed(1)}%</h4>
-                        <p>正確率</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="alert ${percentage >= 70 ? 'alert-success' : 'alert-warning'} mb-4">
-            ${percentage === 100 ? '恭喜！完美通過測驗！' : 
-             percentage >= 70 ? '做得好！達到合格分數。' : 
-             '加油！需要多練習。'}
-        </div>
-    `;
-    
-    // 顯示答題統計
-    resultHTML += `
-        <div class="card mb-4">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">答題統計</h5>
-            </div>
-            <div class="card-body">
-                <p><strong>已答題數:</strong> ${answered}/${total}</p>
-                ${unanswered > 0 ? `<p><strong>未答題數:</strong> ${unanswered}/${total}</p>` : ''}
-                <p><strong>答對題數:</strong> ${state.score}/${answered}</p>
-                <p><strong>答錯題數:</strong> ${answered - state.score}/${answered}</p>
-            </div>
-        </div>
-    `;
-    
-    // 如果有錯題，顯示錯題分析
-    if (state.wrongQuestions.length > 0) {
-        // 按主題分類錯題
-        const topicWrongs = {};
-        state.wrongQuestions.forEach(question => {
-            const topic = question.topic || '未分類';
-            if (!topicWrongs[topic]) {
-                topicWrongs[topic] = [];
-            }
-            topicWrongs[topic].push(question);
-        });
-        
-        resultHTML += `
-            <div class="card mb-4">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0">錯題分析</h5>
-                </div>
-                <div class="card-body">
-        `;
-        
-        // 遍歷每個主題
-        for (const [topic, questions] of Object.entries(topicWrongs)) {
-            resultHTML += `
-                <div class="mb-4">
-                    <h5 class="border-bottom pb-2">【${topic}】: ${questions.length}題</h5>
-            `;
+                    <div class="fw-bold mb-2">解析:</div>
+                    <div class="highlight">${question.explanation || '無解析'}</div>
+                `;
+                
+                this.elements.explanationContent.innerHTML = explanationHTML;
+                
+                // 顯示主題標籤
+                this.elements.topicBadge.textContent = question.topic || '未分類';
+                this.elements.subtopicBadge.textContent = question.subtopic || '未分類';
+            },
             
-            // 遍歷該主題下的每個錯題
-            questions.forEach((q, index) => {
-                const userAnswer = state.userAnswers[state.questions.indexOf(q)];
-                // 找到用戶選擇的選項物件
-                const userChoice = q.options.find(opt => opt.label === userAnswer);
-                // 找到正確答案的選項物件
-                const correctChoice = q.options.find(opt => opt.label === q.answer);
+            showCurrentExplanation() {
+                if (this.state.currentQuestionIndex in this.state.userAnswers) {
+                    const question = this.state.questions[this.state.currentQuestionIndex];
+                    const userAnswerData = this.state.userAnswers[this.state.currentQuestionIndex];
+                    this.showExplanation(question, userAnswerData.answer, userAnswerData.isCorrect);
+                    this.showAlert('已顯示當前題目解析', 'info');
+                } else {
+                    this.showAlert('建議先回答題目再查看解析，這樣學習效果更好！', 'info');
+                }
+            },
+            
+            nextQuestion() {
+                if (this.state.currentQuestionIndex < this.state.questions.length - 1) {
+                    this.state.currentQuestionIndex++;
+                    this.displayQuestion();
+                } else {
+                    this.finishQuiz();
+                }
+            },
+            
+            prevQuestion() {
+                if (this.state.currentQuestionIndex > 0 && this.state.currentMode !== 'exam') {
+                    this.state.currentQuestionIndex--;
+                    this.displayQuestion();
+                }
+            },
+            
+            backToSelection() {
+                if (this.state.isQuizActive) {
+                    const confirmBack = confirm('確定要放棄當前測驗並返回科目選擇嗎？\n進度將不會被保存。');
+                    if (!confirmBack) {
+                        return;
+                    }
+                }
                 
-                // 生成唯一ID用於識別此題
-                const questionId = `wrong-q-${topic.replace(/\s+/g, '-')}-${index}`;
+                this.state.isQuizActive = false;
+                this.unlockInterface();
+                this.stopTimer();
                 
-                resultHTML += `
-                    <div class="mb-3">
-                        <!-- 可點擊的題目標題 -->
-                        <div class="fw-bold position-relative" 
-                             style="cursor: pointer; padding: 5px; border-radius: 4px;" 
-                             data-bs-toggle="collapse" 
-                             data-bs-target="#${questionId}" 
-                             aria-expanded="false" 
-                             aria-controls="${questionId}">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>${index+1}. ${q.question}</div>
-                                <i class="fas fa-chevron-down"></i>
+                this.elements.quizContainer.classList.add('d-none');
+                this.elements.settingsPanel.classList.remove('d-none');
+                this.elements.quizStatus.style.display = 'none';
+                this.elements.quizStatus.classList.remove('active');
+                
+                console.log('🔙 已返回科目選擇');
+            },
+            
+            finishQuiz() {
+                this.stopTimer();
+                this.showResult();
+                
+                this.state.isQuizActive = false;
+                this.unlockInterface();
+            },
+            
+            showResult() {
+                const total = this.state.questions.length;
+                const answered = Object.keys(this.state.userAnswers).length;
+                const score = this.state.score;
+                const percentage = (score / total * 100).toFixed(1);
+                
+                const endTime = new Date();
+                const duration = Math.round((endTime - this.state.startTime) / 1000 / 60);
+                
+                let resultHTML = `
+                    <div class="text-center mb-4">
+                        <h3>📊 ${this.state.currentMode === 'review' ? '複習' : '測驗'}結果</h3>
+                        <div class="progress my-3" style="height: 25px;">
+                            <div class="progress-bar ${percentage >= 70 ? 'bg-success' : 'bg-warning'}" style="width: ${percentage}%">
+                                ${percentage}%
                             </div>
                         </div>
-                        
-                        <div class="ps-3 mt-1">
-                            <div class="text-danger">您的答案: ${userAnswer} (${userChoice ? userChoice.content : '未作答'})</div>
-                            <div class="text-success">正確答案: ${q.answer} (${correctChoice ? correctChoice.content : '未知'})</div>
-                            <div class="mt-1">分類: ${q.topic || '未分類'} > ${q.subtopic || '未分類'}</div>
-                            
-                            <!-- 可折疊的解析區域 -->
-                            <div class="collapse mt-2" id="${questionId}">
-                                <div class="card card-body bg-light">
-                                    <h6 class="text-primary mb-2">題目解析:</h6>
-                                    ${q.explanation || '無解析'}
+                    </div>
+                    
+                    <div class="row text-center mb-4">
+                        <div class="col-3">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h4 class="text-primary">${score}</h4>
+                                    <small>得分</small>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-3">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h4 class="text-info">${total}</h4>
+                                    <small>總題數</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h4 class="text-warning">${percentage}%</h4>
+                                    <small>正確率</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h4 class="text-secondary">${duration}分</h4>
+                                    <small>用時</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert ${percentage >= 70 ? 'alert-success' : 'alert-warning'} mb-4">
+                        <h5 class="alert-heading">
+                            ${percentage >= 70 ? '🎉 表現優秀！' : '💪 繼續努力！'}
+                        </h5>
+                        <p class="mb-0">
+                            ${percentage >= 70 ? 
+                                '成績優異，對該科目掌握良好！' : 
+                                '還有進步空間，建議多加練習錯題。'}
+                        </p>
                     </div>
                 `;
-            });
-            
-            resultHTML += `</div>`;
-        }
-        
-        resultHTML += `
-                </div>
-            </div>
-        `;
-    }
-    
-    // 更新結果內容
-    document.getElementById('result-content').innerHTML = resultHTML;
-    
-    // 添加點擊效果 - 切換箭頭方向
-    document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(item => {
-        item.addEventListener('click', function() {
-            const icon = this.querySelector('i');
-            // 切換箭頭方向
-            if (this.getAttribute('aria-expanded') === 'true') {
-                icon.classList.remove('fa-chevron-up');
-                icon.classList.add('fa-chevron-down');
-            } else {
-                icon.classList.remove('fa-chevron-down');
-                icon.classList.add('fa-chevron-up');
-            }
-        });
-    });
-    
-    // 顯示結果模態框
-    resultModal.show();
-    
-    // 如果是錯題複習模式，隱藏複習錯題按鈕
-    document.getElementById('review-wrong-btn').style.display = state.mode === 'wrong' ? 'none' : 'block';
-}
-        
-        // 複習錯題
-        function reviewWrongQuestions() {
-            if (state.wrongQuestions.length === 0) {
-                alert('沒有錯題需要複習');
-                return;
-            }
-            
-            // 關閉結果模態框
-            resultModal.hide();
-            
-            // 設置為錯題模式
-            state.mode = 'wrong';
-            modeBtns.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.mode === 'wrong') {
-                    btn.classList.add('active');
-                }
-            });
-            
-            // 將錯題作為新的題目集
-            state.questions = state.wrongQuestions.slice();
-            state.currentQuestionIndex = 0;
-            state.score = 0;
-            state.userAnswers = {};
-            state.wrongQuestions = [];
-            
-            // 重新編號
-            state.questions.forEach((q, index) => {
-                q.number = index + 1;
-            });
-            
-            // 開始複習
-            displayQuestion();
-            
-            // 更新按鈕狀態
-            submitBtn.disabled = false;
-            nextBtn.disabled = true;
-            
-            alert('開始複習錯題');
-        }
-        
-        // 統計資料顯示
-        function showStatistics() {
-            // 統計資料
-            const correctCount = state.userData.correct ? state.userData.correct.length : 0;
-            const incorrectCount = state.userData.incorrect ? state.userData.incorrect.length : 0;
-            const totalAnswered = correctCount + incorrectCount;
-            
-            const accuracy = totalAnswered > 0 ? (correctCount / totalAnswered) * 100 : 0;
-            
-            // 分析主題強弱
-            const topicStats = {};
-            (state.userData.history || []).forEach(entry => {
-                const topic = entry.topic || '未分類';
-                const isCorrect = entry.is_correct || false;
                 
-                if (!topicStats[topic]) {
-                    topicStats[topic] = { correct: 0, total: 0 };
-                }
-                
-                topicStats[topic].total += 1;
-                if (isCorrect) {
-                    topicStats[topic].correct += 1;
-                }
-            });
-            
-            // 生成統計HTML
-            let statsHTML = `
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">基本統計</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>正確題數:</strong> ${correctCount}</p>
-                                <p><strong>錯誤題數:</strong> ${incorrectCount}</p>
-                                <p><strong>總題數:</strong> ${totalAnswered}</p>
-                                <p><strong>正確率:</strong> ${accuracy.toFixed(2)}%</p>
+                // 錯題分析
+                if (this.state.wrongQuestions.length > 0) {
+                    const topicWrongs = {};
+                    this.state.wrongQuestions.forEach(question => {
+                        const topic = question.topic || '未分類';
+                        if (!topicWrongs[topic]) {
+                            topicWrongs[topic] = [];
+                        }
+                        topicWrongs[topic].push(question);
+                    });
+                    
+                    resultHTML += `
+                        <div class="card">
+                            <div class="card-header bg-danger text-white">
+                                <h5 class="mb-0">❌ 錯題分析 (${this.state.wrongQuestions.length}題)</h5>
                             </div>
-                            <div class="col-md-6">
-                                <div class="progress mb-2" style="height: 25px;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: ${accuracy}%">${accuracy.toFixed(1)}%</div>
+                            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    `;
+                    
+                    for (const [topic, questions] of Object.entries(topicWrongs)) {
+                        resultHTML += `
+                            <div class="mb-4">
+                                <h6 class="border-bottom pb-2">【${topic}】: ${questions.length}題</h6>
+                        `;
+                        
+                        questions.forEach((q, index) => {
+                            const userAnswerIndex = this.state.userAnswers[this.state.questions.indexOf(q)].answer.charCodeAt(0) - 65;
+                            const userAnswerText = q.options[userAnswerIndex] || '未作答';
+                            const questionId = `wrong-q-${topic.replace(/\s+/g, '-')}-${index}`;
+                            
+                            resultHTML += `
+                                <div class="mb-3">
+                                    <div class="fw-bold position-relative" 
+                                         style="cursor: pointer; padding: 5px; border-radius: 4px;" 
+                                         data-bs-toggle="collapse" 
+                                         data-bs-target="#${questionId}">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>${index+1}. ${q.question}</div>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ps-3 mt-1">
+                                        <div class="text-danger">您的答案: ${this.state.userAnswers[this.state.questions.indexOf(q)].answer} (${userAnswerText})</div>
+                                        <div class="text-success">正確答案: ${q.correct_answer_letter} (${q.options[q.correct_answer_index]})</div>
+                                        <div class="collapse mt-2" id="${questionId}">
+                                            <div class="card card-body bg-light">
+                                                <h6 class="text-primary mb-2">題目解析:</h6>
+                                                ${q.explanation || '無解析'}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        resultHTML += `</div>`;
+                    }
+                    
+                    resultHTML += `
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('result-content').innerHTML = resultHTML;
+                
+                // 添加折疊效果
+                document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const icon = this.querySelector('i');
+                        if (this.getAttribute('aria-expanded') === 'true') {
+                            icon.classList.remove('fa-chevron-up');
+                            icon.classList.add('fa-chevron-down');
+                        } else {
+                            icon.classList.remove('fa-chevron-down');
+                            icon.classList.add('fa-chevron-up');
+                        }
+                    });
+                });
+                
+                this.modals.result.show();
+                
+                // 隱藏複習錯題按鈕（如果是錯題模式）
+                document.getElementById('review-wrong-btn').style.display = 
+                    (this.state.currentMode === 'review' && this.state.selectedReviewMode === 'wrong') ? 'none' : 'block';
+            },
+            
+            reviewWrongQuestions() {
+                if (this.state.wrongQuestions.length === 0) {
+                    this.showAlert('沒有錯題需要複習', 'info');
+                    return;
+                }
+                
+                this.modals.result.hide();
+                
+                this.state.currentMode = 'review';
+                this.state.selectedReviewMode = 'wrong';
+                
+                this.state.questions = this.state.wrongQuestions.slice();
+                this.state.currentQuestionIndex = 0;
+                this.state.score = 0;
+                this.state.userAnswers = {};
+                this.state.wrongQuestions = [];
+                
+                this.state.questions.forEach((q, index) => {
+                    q.number = index + 1;
+                });
+                
+                this.displayQuestion();
+                this.updateButtonStates();
+                
+                this.showAlert('開始複習錯題', 'success');
+            },
+            
+            updateButtonStates() {
+                const hasAnswered = this.state.currentQuestionIndex in this.state.userAnswers;
+                const isFirstQuestion = this.state.currentQuestionIndex === 0;
+                const isLastQuestion = this.state.currentQuestionIndex === this.state.questions.length - 1;
+                
+                this.elements.prevBtn.disabled = isFirstQuestion || this.state.currentMode === 'exam';
+                this.elements.submitBtn.disabled = hasAnswered;
+                this.elements.nextBtn.disabled = !hasAnswered || isLastQuestion;
+                this.elements.finishBtn.disabled = !hasAnswered && !isLastQuestion;
+                this.elements.explanationBtn.disabled = !hasAnswered;
+            },
+            
+            updateStats() {
+                const answered = Object.keys(this.state.userAnswers).length;
+                const total = this.state.questions.length;
+                const percentage = answered > 0 ? (this.state.score / answered * 100).toFixed(1) : 0;
+                
+                this.elements.statsDisplay.textContent = `得分: ${this.state.score}/${answered} (${percentage}%)`;
+            },
+            
+            showStatistics() {
+                const correctCount = this.state.userData.correct ? this.state.userData.correct.length : 0;
+                const incorrectCount = this.state.userData.incorrect ? this.state.userData.incorrect.length : 0;
+                const totalAnswered = correctCount + incorrectCount;
+                const accuracy = totalAnswered > 0 ? (correctCount / totalAnswered) * 100 : 0;
+                
+                // 分析各題庫統計
+                const databaseStats = {};
+                (this.state.userData.history || []).forEach(entry => {
+                    const db = entry.database || '未知';
+                    if (!databaseStats[db]) {
+                        databaseStats[db] = { correct: 0, total: 0 };
+                    }
+                    databaseStats[db].total += 1;
+                    if (entry.is_correct) {
+                        databaseStats[db].correct += 1;
+                    }
+                });
+                
+                // 主題分析
+                const topicStats = {};
+                (this.state.userData.history || []).forEach(entry => {
+                    const topic = entry.topic || '未分類';
+                    if (!topicStats[topic]) {
+                        topicStats[topic] = { correct: 0, total: 0 };
+                    }
+                    topicStats[topic].total += 1;
+                    if (entry.is_correct) {
+                        topicStats[topic].correct += 1;
+                    }
+                });
+                
+                let statsHTML = `
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <h4>${correctCount}</h4>
+                                    <p class="mb-0">答對題數</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body text-center">
+                                    <h4>${incorrectCount}</h4>
+                                    <p class="mb-0">答錯題數</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">主題分析</h5>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">整體表現</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>總答題數:</strong> ${totalAnswered}</p>
+                                    <p><strong>整體正確率:</strong> ${accuracy.toFixed(1)}%</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="progress" style="height: 30px;">
+                                        <div class="progress-bar ${accuracy >= 70 ? 'bg-success' : 'bg-warning'}" style="width: ${accuracy}%">
+                                            ${accuracy.toFixed(1)}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>主題</th>
-                                        <th>正確率</th>
-                                        <th>正確/總題數</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-            `;
-            
-            // 添加每個主題的統計
-            const topics = Object.keys(topicStats);
-            if (topics.length > 0) {
-                topics.forEach(topic => {
-                    const stats = topicStats[topic];
-                    const topicAccuracy = stats.total > 0 ? (stats.correct / stats.total) * 100 : 0;
+                    
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">各科目表現</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>科目</th>
+                                            <th>正確率</th>
+                                            <th>正確/總數</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                `;
+                
+                const databaseNames = {
+                    'financial-market': '金融市場實務',
+                    'financial-analysis': '財務報表分析',
+                    'quality-management': '品質管理'
+                };
+                
+                Object.keys(databaseStats).forEach(db => {
+                    const stats = databaseStats[db];
+                    const dbAccuracy = stats.total > 0 ? (stats.correct / stats.total) * 100 : 0;
+                    const dbName = databaseNames[db] || db;
                     
                     statsHTML += `
                         <tr>
-                            <td>${topic}</td>
+                            <td>${dbName}</td>
                             <td>
-                                <div class="progress" style="height: 10px;">
-                                    <div class="progress-bar ${topicAccuracy < 60 ? 'bg-danger' : topicAccuracy < 80 ? 'bg-warning' : 'bg-success'}" role="progressbar" style="width: ${topicAccuracy}%;"></div>
+                                <div class="progress" style="height: 15px;">
+                                    <div class="progress-bar ${dbAccuracy < 60 ? 'bg-danger' : dbAccuracy < 80 ? 'bg-warning' : 'bg-success'}" 
+                                         style="width: ${dbAccuracy}%;"></div>
                                 </div>
-                                ${topicAccuracy.toFixed(1)}%
+                                ${dbAccuracy.toFixed(1)}%
                             </td>
                             <td>${stats.correct}/${stats.total}</td>
                         </tr>
                     `;
                 });
-            } else {
-                statsHTML += '<tr><td colspan="3" class="text-center">尚未有任何練習記錄</td></tr>';
-            }
-            
-            statsHTML += `
-                                </tbody>
-                            </table>
+                
+                if (Object.keys(databaseStats).length === 0) {
+                    statsHTML += '<tr><td colspan="3" class="text-center">尚未有練習記錄</td></tr>';
+                }
+                
+                statsHTML += `
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
-            
-            // 更新統計內容
-            document.getElementById('stats-content').innerHTML = statsHTML;
-            
-            // 顯示統計模態框
-            statsModal.show();
-        }
-        
-        // 匯出錯題
-        function exportWrongQuestions() {
-            if (!state.userData.incorrect || state.userData.incorrect.length === 0) {
-                alert('目前沒有錯題記錄');
-                return;
-            }
-            
-            let exportText = "生成式AI認證考試錯題集\n";
-            exportText += `匯出時間: ${new Date().toLocaleString()}\n\n`;
-            
-            const incorrectQuestions = state.userData.incorrect;
-            const questionData = {};
-            
-            // 從歷史記錄中尋找對應的錯題詳細資訊
-            (state.userData.history || []).forEach(entry => {
-                if (incorrectQuestions.includes(entry.question) && !questionData[entry.question]) {
-                    questionData[entry.question] = entry;
-                }
-            });
-            
-            // 生成錯題內容
-            incorrectQuestions.forEach((questionText, i) => {
-                exportText += `題目 ${i+1}: ${questionText}\n`;
-                
-                if (questionData[questionText]) {
-                    const data = questionData[questionText];
-                    exportText += `正確答案: ${data.correct_answer_letter || '未知'}\n`;
                     
-                    // 寫入選項
-                    const options = data.options || [];
-                    if (options.length > 0) {
-                        exportText += "選項:\n";
-                        options.forEach((option, j) => {
-                            exportText += `${String.fromCharCode(65+j)}. ${option}\n`;
-                        });
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">主題分析</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>主題</th>
+                                            <th>正確率</th>
+                                            <th>建議</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                `;
+                
+                Object.keys(topicStats).forEach(topic => {
+                    const stats = topicStats[topic];
+                    const topicAccuracy = stats.total > 0 ? (stats.correct / stats.total) * 100 : 0;
+                    let suggestion = '';
+                    
+                    if (topicAccuracy < 60) {
+                        suggestion = '🔴 重點加強';
+                    } else if (topicAccuracy < 80) {
+                        suggestion = '🟡 持續練習';
+                    } else {
+                        suggestion = '🟢 表現良好';
                     }
                     
-                    // 寫入主題分類
-                    exportText += `主題: ${data.topic || '未分類'} > ${data.subtopic || '未分類'}\n`;
+                    statsHTML += `
+                        <tr>
+                            <td>${topic}</td>
+                            <td>
+                                <div class="progress" style="height: 15px;">
+                                    <div class="progress-bar ${topicAccuracy < 60 ? 'bg-danger' : topicAccuracy < 80 ? 'bg-warning' : 'bg-success'}" 
+                                         style="width: ${topicAccuracy}%;"></div>
+                                </div>
+                                ${topicAccuracy.toFixed(1)}%
+                            </td>
+                            <td>${suggestion}</td>
+                        </tr>
+                    `;
+                });
+                
+                if (Object.keys(topicStats).length === 0) {
+                    statsHTML += '<tr><td colspan="3" class="text-center">尚未有練習記錄</td></tr>';
                 }
                 
-                exportText += "\n" + "-".repeat(50) + "\n\n";
-            });
+                statsHTML += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('stats-content').innerHTML = statsHTML;
+                this.modals.stats.show();
+            },
             
-            // 創建下載連結
-            const filename = `生成式AI認證錯題集_${new Date().toISOString().slice(0,19).replace(/[-:T]/g, '')}.txt`;
-            const blob = new Blob([exportText], { type: 'text/plain;charset=utf-8' });
+            exportWrongQuestions() {
+                if (!this.state.userData.incorrect || this.state.userData.incorrect.length === 0) {
+                    this.showAlert('目前沒有錯題記錄', 'info');
+                    return;
+                }
+                
+                let exportText = "金融證照模擬考試錯題集\n";
+                exportText += `匯出時間: ${new Date().toLocaleString()}\n`;
+                exportText += `總錯題數: ${this.state.userData.incorrect.length}\n\n`;
+                exportText += "="*50 + "\n\n";
+                
+                const incorrectQuestions = this.state.userData.incorrect;
+                const questionData = {};
+                
+                // 從歷史記錄中尋找對應的錯題詳細資訊
+                (this.state.userData.history || []).forEach(entry => {
+                    if (incorrectQuestions.includes(entry.question) && !questionData[entry.question]) {
+                        questionData[entry.question] = entry;
+                    }
+                });
+                
+                // 生成錯題內容
+                incorrectQuestions.forEach((questionText, i) => {
+                    exportText += `【題目 ${i+1}】\n${questionText}\n\n`;
+                    
+                    if (questionData[questionText]) {
+                        const data = questionData[questionText];
+                        
+                        // 寫入選項
+                        const options = data.options || [];
+                        if (options.length > 0) {
+                            exportText += "選項:\n";
+                            options.forEach((option, j) => {
+                                exportText += `${String.fromCharCode(65+j)}. ${option}\n`;
+                            });
+                            exportText += "\n";
+                        }
+                        
+                        exportText += `正確答案: ${data.correct_answer_letter || '未知'}\n`;
+                        exportText += `您的答案: ${data.user_answer || '未知'}\n`;
+                        
+                        const dbNames = {
+                            'financial-market': '金融市場實務',
+                            'financial-analysis': '財務報表分析',
+                            'quality-management': '品質管理'
+                        };
+                        exportText += `科目來源: ${dbNames[data.database] || data.database}\n`;
+                        exportText += `主題分類: ${data.topic || '未分類'} > ${data.subtopic || '未分類'}\n`;
+                        
+                        if (data.explanation) {
+                            exportText += `解析: ${data.explanation}\n`;
+                        }
+                    }
+                    
+                    exportText += "\n" + "-".repeat(50) + "\n\n";
+                });
+                
+                exportText += "\n建議復習重點:\n";
+                exportText += "1. 重點關注答錯率高的主題\n";
+                exportText += "2. 理解題目背後的理論基礎\n";
+                exportText += "3. 加強相關概念的實務應用\n";
+                exportText += "4. 定期回顧錯題，避免重複犯錯\n";
+                
+                // 創建下載連結
+                const filename = `金融證照錯題集_${new Date().toISOString().slice(0,19).replace(/[-:T]/g, '')}.txt`;
+                const blob = new Blob([exportText], { type: 'text/plain;charset=utf-8' });
+                
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                this.showAlert(`錯題已匯出至 ${filename}`, 'success');
+            },
             
-            // 創建下載元素
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = filename;
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            resetProgress() {
+                if (confirm('確定要重置所有學習進度嗎？此操作不可逆。\n\n將清除：\n- 所有答題記錄\n- 錯題統計\n- 學習歷史')) {
+                    this.state.userData = {
+                        correct: [],
+                        incorrect: [],
+                        history: [],
+                        databaseStats: {}
+                    };
+                    this.saveUserData();
+                    this.updateReviewButtonState();
+                    this.modals.stats.hide();
+                    this.showAlert('學習進度已重置', 'success');
+                }
+            },
             
-            alert(`錯題已匯出至 ${filename}`);
-        }
-        
-        // 重置學習進度
-        function resetProgress() {
-            if (confirm('確定要重置所有學習進度嗎？此操作不可逆。')) {
-                state.userData = {
-                    correct: [],
-                    incorrect: [],
-                    history: []
+            startTimer() {
+                this.state.isTimerRunning = true;
+                this.state.startTime = new Date();
+                this.updateTimer();
+            },
+            
+            stopTimer() {
+                this.state.isTimerRunning = false;
+                if (this.state.timerId) {
+                    clearTimeout(this.state.timerId);
+                    this.state.timerId = null;
+                }
+            },
+            
+            updateTimer() {
+                if (!this.state.isTimerRunning) {
+                    return;
+                }
+                
+                const currentTime = new Date();
+                const elapsedSeconds = Math.floor((currentTime - this.state.startTime) / 1000);
+                const remainingSeconds = (this.state.examDuration * 60) - elapsedSeconds;
+                
+                if (remainingSeconds <= 0) {
+                    this.updateTimerDisplay('00:00');
+                    this.elements.timerElement.classList.add('warning');
+                    this.stopTimer();
+                    this.showAlert('時間到！考試結束。', 'warning');
+                    this.finishQuiz();
+                    return;
+                }
+                
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+                const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                this.updateTimerDisplay(timeString);
+                
+                if (minutes < 5) {
+                    this.elements.timerElement.classList.add('warning');
+                } else {
+                    this.elements.timerElement.classList.remove('warning');
+                }
+                
+                this.state.timerId = setTimeout(() => this.updateTimer(), 1000);
+            },
+            
+            updateTimerDisplay(timeString) {
+                this.elements.timerElement.innerHTML = `<i class="fas fa-clock me-2"></i>剩餘時間: ${timeString}`;
+            },
+            
+            showAlert(message, type = 'info') {
+                const alertTypes = {
+                    'success': 'alert-success',
+                    'error': 'alert-danger', 
+                    'warning': 'alert-warning',
+                    'info': 'alert-info'
                 };
-                saveUserData();
-                alert('學習進度已重置');
-                // 關閉統計視窗
-                statsModal.hide();
+                
+                const alertClass = alertTypes[type] || 'alert-info';
+                const iconMap = {
+                    'success': 'fa-check-circle',
+                    'error': 'fa-exclamation-triangle',
+                    'warning': 'fa-exclamation-triangle', 
+                    'info': 'fa-info-circle'
+                };
+                const icon = iconMap[type] || 'fa-info-circle';
+                
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+                alertDiv.style.cssText = `
+                    top: 100px; 
+                    right: 20px; 
+                    z-index: 9999; 
+                    min-width: 300px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                `;
+                alertDiv.innerHTML = `
+                    <i class="fas ${icon} me-2"></i>${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                document.body.appendChild(alertDiv);
+                
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 5000);
+            },
+            
+            showLoading(text = '處理中...') {
+                this.elements.loadingText.textContent = text;
+                this.elements.loadingOverlay.classList.remove('d-none');
+            },
+            
+            hideLoading() {
+                this.elements.loadingOverlay.classList.add('d-none');
             }
-        }
+        };
         
         // 初始化應用
-        init();
+        document.addEventListener('DOMContentLoaded', () => {
+            ExamApp.init();
+        });
     </script>
 </body>
 </html>
+                    
